@@ -135,6 +135,20 @@ function ciniki_gallery_imageAdd(&$ciniki) {
 	}
 
 	//
+	// Add image reference
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
+	$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
+		'image_id'=>$args['image_id'], 
+		'object'=>'ciniki.gallery.item', 
+		'object_id'=>$img_id,
+		'object_field'=>'image_id'));
+	if( $rc['stat'] != 'ok' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
+		return $rc;
+	}
+
+	//
 	// Commit the database changes
 	//
     $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.gallery');
