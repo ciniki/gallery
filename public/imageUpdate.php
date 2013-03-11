@@ -34,22 +34,28 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
     }   
     $args = $rc['args'];
 
+	//
+	// Get the existing image details
+	//
+	$strsql = "SELECT uuid, image_id FROM ciniki_gallery "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['gallery_image_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'item');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['item']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'264', 'msg'=>'Gallery image not found'));
+	}
+	$item = $rc['item'];
+
 	if( isset($args['name']) ) {
 		if( $args['name'] != '' ) { 
 			$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
 		} else {
-			$strsql = "SELECT uuid FROM ciniki_gallery "
-				. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-				. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['gallery_image_id']) . "' "
-				. "";
-			$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'image');
-			if( $rc['stat'] != 'ok' ) {
-				return $rc;
-			}
-			if( !isset($rc['image']) ) {
-				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'264', 'msg'=>'Unable to update image'));
-			}
-			$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($rc['image']['uuid'])));
+			// Use the UUID if image name is not specified
+			$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($item['uuid'])));
 		}
 		//
 		// Make sure the permalink is unique
@@ -125,6 +131,37 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
 	if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'266', 'msg'=>'Unable to update image'));	
+	}
+
+	//
+	// Update image reference
+	//
+	if( isset($args['image_id']) && $item['image_id'] != $args['image_id']) {
+		//
+		// Remove the old reference
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
+		$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
+			'object'=>'ciniki.gallery.item', 
+			'object_id'=>$args['gallery_image_id']));
+		if( $rc['stat'] == 'fail' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
+			return $rc;
+		}
+
+		//
+		// Add the new reference
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
+		$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
+			'image_id'=>$args['image_id'], 
+			'object'=>'ciniki.gallery.item', 
+			'object_id'=>$args['gallery_image_id'],
+			'object_field'=>'image_id'));
+		if( $rc['stat'] != 'ok' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
+			return $rc;
+		}
 	}
 
 	//

@@ -44,7 +44,7 @@ function ciniki_gallery_imageDelete(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refDelete');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'removeImage');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.gallery');
 	if( $rc['stat'] != 'ok' ) { 
@@ -52,7 +52,7 @@ function ciniki_gallery_imageDelete(&$ciniki) {
 	}   
 
 	//
-	// Check the permalink doesn't already exist
+	// Get the existing image information
 	//
 	$strsql = "SELECT id, uuid, image_id FROM ciniki_gallery "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
@@ -69,22 +69,12 @@ function ciniki_gallery_imageDelete(&$ciniki) {
 	$item = $rc['item'];
 
 	//
-	// Delete the reference to the image
+	// Delete the reference to the image, and remove the image if no more references
 	//
-	$rc = ciniki_images_refDelete($ciniki, $args['business_id'], array(
-		'image_id'=>$item['image_id'],
+	$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
 		'object'=>'ciniki.gallery.item',
 		'object_id'=>$item['id']));
 	if( $rc['stat'] == 'fail' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
-		return $rc;
-	}
-
-	//
-	// Delete the image
-	//
-	$rc = ciniki_images_removeImage($ciniki, $args['business_id'], 0, $item['image_id']);
-	if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.gallery');
 		return $rc;
 	}
