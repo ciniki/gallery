@@ -73,6 +73,13 @@ function ciniki_gallery_imageAdd(&$ciniki) {
 	}
 
 	//
+	// Check if album name is Uncategorized
+	//
+	if( $args['album'] == 'Uncategorized' ) {
+		$args['album'] = '';
+	}
+
+	//
 	// Check the permalink doesn't already exist
 	//
 	$strsql = "SELECT id, name, permalink FROM ciniki_gallery "

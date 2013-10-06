@@ -74,6 +74,13 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
 		}
 	} 
 
+	//
+	// Check if album name is Uncategorized
+	//
+	if( $args['album'] == 'Uncategorized' ) {
+		$args['album'] = '';
+	}
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
