@@ -18,7 +18,7 @@ function ciniki_gallery_imageAdd(&$ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
 		'image_id'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'Image'),
-        'name'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'Title'), 
+        'name'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Title'), 
         'permalink'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Permalink'), 
         'album'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Album'), 
         'webflags'=>array('required'=>'no', 'default'=>'0', 'blank'=>'yes', 'name'=>'Website Flags'), 
