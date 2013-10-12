@@ -137,7 +137,7 @@ function ciniki_gallery_imageAdd(&$ciniki) {
 		if( isset($args[$field]) && $args[$field] != '' ) {
 			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.gallery', 
 				'ciniki_gallery_history', $args['business_id'], 
-				1, 'ciniki_gallery_images', $img_id, $field, $args[$field]);
+				1, 'ciniki_gallery', $img_id, $field, $args[$field]);
 		}
 	}
 

@@ -92,7 +92,7 @@ function ciniki_gallery_imageDelete(&$ciniki) {
 	}
 
 	ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.gallery', 'ciniki_gallery_history', 
-		$args['business_id'], 1, 'ciniki_gallery_images', $args['gallery_image_id'], '*', '');
+		$args['business_id'], 1, 'ciniki_gallery', $args['gallery_image_id'], '*', '');
 
 	//
 	// Commit the database changes
