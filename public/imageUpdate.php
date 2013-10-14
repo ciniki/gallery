@@ -34,6 +34,16 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
     }   
     $args = $rc['args'];
 
+    //  
+    // Make sure this module is activated, and
+    // check permission to run this function for this business
+    //  
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
+    $rc = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.imageUpdate', 0); 
+    if( $rc['stat'] != 'ok' ) { 
+        return $rc;
+    }
+
 	//
 	// Get the existing image details
 	//
@@ -80,16 +90,6 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
 	if( $args['album'] == 'Uncategorized' ) {
 		$args['album'] = '';
 	}
-
-    //  
-    // Make sure this module is activated, and
-    // check permission to run this function for this business
-    //  
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
-    $rc = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.imageUpdate', 0); 
-    if( $rc['stat'] != 'ok' ) { 
-        return $rc;
-    }
 
 	//  
 	// Turn off autocommit
