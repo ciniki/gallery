@@ -37,19 +37,27 @@ function ciniki_gallery_dbIntegrityCheck($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUpdate');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFixTableHistory');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAddMissing');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectRefFix');
 
 	if( $args['fix'] == 'yes' ) {
 		//
-		// Add missing image refs
+		// Load objects file
 		//
-		$rc = ciniki_images_refAddMissing($ciniki, 'ciniki.gallery', $args['business_id'],
-			array('object'=>'ciniki.gallery.item', 
-				'object_table'=>'ciniki_gallery',
-				'object_id_field'=>'id',
-				'object_field'=>'image_id'));
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'objects');
+		$rc = ciniki_gallery_objects($ciniki);
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
+		}
+		$objects = $rc['objects'];
+
+		//
+		// Check any references for the objects
+		//
+		foreach($objects as $o => $obj) {
+			$rc = ciniki_core_objectRefFix($ciniki, $args['business_id'], 'ciniki.gallery.'.$o, 0x04);
+			if( $rc['stat'] != 'ok' ) {
+				return $rc;
+			}
 		}
 
 		//
