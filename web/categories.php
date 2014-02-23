@@ -19,7 +19,7 @@
 //		...
 // </categories>
 //
-function ciniki_gallery_web_categories($ciniki, $settings, $business_id) {
+function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) {
 
 	$strsql = "SELECT DISTINCT album AS name "
 		. "FROM ciniki_gallery "

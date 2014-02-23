@@ -28,7 +28,7 @@
 //		...
 // </images>
 //
-function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $type, $type_name) {
+function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $args) {
 
 	$strsql = "SELECT name AS title, permalink, image_id, "
 		. "IF(ciniki_images.last_updated > ciniki_gallery.last_updated, "
@@ -39,8 +39,8 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ty
 		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (webflags&0x01) = 0 "
 		. "";
-	if( $type == 'album' ) {
-		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $type_name) . "' "
+	if( $args['type'] == 'album' ) {
+		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
 			. "";
 	} else {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'268', 'msg'=>"Unable to find images."));
