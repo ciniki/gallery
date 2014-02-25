@@ -39,7 +39,7 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
 		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (webflags&0x01) = 0 "
 		. "";
-	if( $args['type'] == 'album' ) {
+	if( isset($args['type']) && $args['type'] == 'album' ) {
 		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
 			. "";
 	} else {
