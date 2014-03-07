@@ -88,7 +88,7 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
 	//
 	// Check if album name is Uncategorized
 	//
-	if( $args['album'] == 'Uncategorized' ) {
+	if( isset($args['album']) && $args['album'] == 'Uncategorized' ) {
 		$args['album'] = '';
 	}
 
