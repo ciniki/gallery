@@ -106,6 +106,7 @@ function ciniki_gallery_main() {
 			}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.saveImage();'},
+				'download':{'label':'Download Original', 'fn':'M.ciniki_gallery_main.downloadImage(M.ciniki_gallery_main.edit.data.image_id,\'original\');'},
 				'delete':{'label':'Remove Image', 'fn':'M.ciniki_gallery_main.deleteImage();'},
 			}},
 		};
@@ -293,6 +294,11 @@ function ciniki_gallery_main() {
 					M.ciniki_gallery_main.edit.close();
 				});
 		}
+	};
+
+	this.downloadImage = function(iid, version) {
+		window.open(M.api.getUploadURL('ciniki.images.get', {'business_id':M.curBusinessID,
+			'image_id':iid, 'version':version, 'attachment':'yes'}));
 	};
 
 	this.deleteImage = function() {
