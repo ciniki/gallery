@@ -17,13 +17,14 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	// Count the number of items before the specified image, then use
 	// that number to LIMIT a query
 	//
-	$strsql = "SELECT COUNT(*) AS pos_num FROM ciniki_gallery "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND (webflags&0x01) = 0 ";
+	$strsql = "SELECT COUNT(*) AS pos_num "
+		. "FROM ciniki_gallery "
+		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (ciniki_gallery.webflags&0x01) = 0 ";
 	if( $args['type'] == 'album' ) {
-		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['img']['category']) . "' ";
+		$strsql .= "AND ciniki_gallery.album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
 	}
-	$strsql .= "AND date_added > '" . ciniki_core_dbQuote($ciniki, $args['img']['date_added']) . "' ";
+	$strsql .= "AND ciniki_gallery.date_added > '" . ciniki_core_dbQuote($ciniki, $args['img']['date_added']) . "' ";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'position');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -41,7 +42,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (webflags&0x01) = 0 ";
 	if( $args['type'] == 'album' ) {
-		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['img']['category']) . "' ";
+		$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
 	}
 	$strsql .= "ORDER BY ciniki_gallery.date_added DESC ";
 	if( $offset == 0 ) {
@@ -76,7 +77,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND (webflags&0x01) = 0 ";
 		if( $args['type'] == 'album' ) {
-			$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['img']['category']) . "' ";
+			$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
 		}
 		$strsql .= "ORDER BY ciniki_gallery.date_added DESC " 	// SORT to get the newest image first
 			. "LIMIT 1"
@@ -101,7 +102,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND (webflags&0x01) = 0 ";
 		if( $args['type'] == 'album' ) {
-			$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['img']['category']) . "' ";
+			$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
 		}
 		$strsql .= "ORDER BY ciniki_gallery.date_added ASC " 	// SORT to get the oldest image first
 			. "LIMIT 1"

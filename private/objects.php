@@ -12,6 +12,18 @@
 function ciniki_gallery_objects($ciniki) {
 	
 	$objects = array();
+	$objects['album'] = array(
+		'name'=>'Album',
+		'sync'=>'yes',
+		'table'=>'ciniki_gallery_albums',
+		'fields'=>array(
+			'name'=>array(),
+			'permalink'=>array(),
+			'webflags'=>array(),
+			'description'=>array(),
+			),
+		'history_table'=>'ciniki_gallery_history',
+		);
 	$objects['image'] = array(
 		'name'=>'Image',
 		'sync'=>'yes',
@@ -19,7 +31,7 @@ function ciniki_gallery_objects($ciniki) {
 		'fields'=>array(
 			'name'=>array(),
 			'permalink'=>array(),
-			'album'=>array(),
+			'album_id'=>array('ref'=>'ciniki.images.album'),
 			'webflags'=>array(),
 			'image_id'=>array('ref'=>'ciniki.images.image'),
 			'description'=>array(),

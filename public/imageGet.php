@@ -47,7 +47,7 @@ function ciniki_gallery_imageGet($ciniki) {
 	$strsql = "SELECT ciniki_gallery.id, "
 		. "ciniki_gallery.name, "
 		. "ciniki_gallery.permalink, "
-		. "ciniki_gallery.album, "
+		. "ciniki_gallery.album_id, "
 		. "ciniki_gallery.webflags, "
 		. "ciniki_gallery.image_id, "
 		. "ciniki_gallery.description "
@@ -58,7 +58,7 @@ function ciniki_gallery_imageGet($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
 		array('container'=>'images', 'fname'=>'id', 'name'=>'image',
-			'fields'=>array('id', 'name', 'permalink', 'album', 'webflags', 'image_id', 'description')),
+			'fields'=>array('id', 'name', 'permalink', 'album_id', 'webflags', 'image_id', 'description')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -67,7 +67,27 @@ function ciniki_gallery_imageGet($ciniki) {
 		return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'263', 'msg'=>'Unable to find image'));
 	}
 	$image = $rc['images'][0]['image'];
+
+	//
+	// Get the list of albums
+	//
+	$strsql = "SELECT id, name "
+		. "FROM ciniki_gallery_albums "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
+		array('container'=>'albums', 'fname'=>'id', 'name'=>'album',
+			'fields'=>array('id', 'name')),
+		));
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['albums']) ) {
+		$albums = array();
+	} else {
+		$albums = $rc['albums'];
+	}
 	
-	return array('stat'=>'ok', 'image'=>$image);
+	return array('stat'=>'ok', 'image'=>$image, 'albums'=>$albums);
 }
 ?>

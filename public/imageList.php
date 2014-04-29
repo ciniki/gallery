@@ -21,7 +21,7 @@ function ciniki_gallery_imageList($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
 	$rc = ciniki_core_prepareArgs($ciniki, 'no', array(
 		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
-		'album'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Album'),
+		'album_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Album'),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -41,7 +41,7 @@ function ciniki_gallery_imageList($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
 	$date_format = ciniki_users_dateFormat($ciniki);
 
-	if( !isset($args['album']) ) {
+/*	if( !isset($args['album']) ) {
 		//
 		// Load the list of albums and image counts
 		//
@@ -74,7 +74,7 @@ function ciniki_gallery_imageList($ciniki) {
 		//
 		$args['album'] = $rc['albums'][0]['album']['name'];
 	}
-
+*/
 	//
 	// Load the list of images for a album
 	//
@@ -86,11 +86,15 @@ function ciniki_gallery_imageList($ciniki) {
 		. "FROM ciniki_gallery "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "";
-	if( $args['album'] == 'Uncategorized' ) {
+	if( isset($args['album_id']) && $args['album_id'] != '' ) {
+		$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['album_id']) . "' ";
+	}
+/*	if( $args['album'] == 'Uncategorized' ) {
 		$strsql .= "AND album = '' ";
 	} else {
 		$strsql .= "AND album = '" . ciniki_core_dbQuote($ciniki, $args['album']) . "' ";
-	}
+	} */
+	$strsql .= "ORDER BY ciniki_gallery.date_added DESC ";
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
 		array('container'=>'images', 'fname'=>'id', 'name'=>'image',
 			'fields'=>array('id', 'name', 'webflags', 'image_id', 'description')),
@@ -99,7 +103,8 @@ function ciniki_gallery_imageList($ciniki) {
 		return $rc;
 	}
 	if( !isset($rc['images']) ) {
-		return array('stat'=>'ok', 'album'=>$args['album'], 'images'=>array());
+//		return array('stat'=>'ok', 'album'=>$args['album'], 'images'=>array());
+		return array('stat'=>'ok', 'images'=>array());
 	}
 	$images = $rc['images'];
 
@@ -117,6 +122,7 @@ function ciniki_gallery_imageList($ciniki) {
 		}
 	}
 
-	return array('stat'=>'ok', 'album'=>$args['album'], 'images'=>$images);
+//	return array('stat'=>'ok', 'album'=>$args['album'], 'images'=>$images);
+	return array('stat'=>'ok', 'images'=>$images);
 }
 ?>

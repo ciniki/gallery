@@ -25,7 +25,7 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
 		'image_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Image'),
         'name'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Title'), 
         'permalink'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Permalink'), 
-        'album'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Album'), 
+        'album_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Album'), 
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Website Flags'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
         )); 

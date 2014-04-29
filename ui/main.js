@@ -7,7 +7,69 @@ function ciniki_gallery_main() {
 		'1':{'name':'Hidden'},
 		'5':{'name':'Album Highlight'},
 		};
+	this.albumWebFlags = {
+		'1':{'name':'Hidden'},
+		};
 	this.init = function() {
+		//
+		// The panel to list the albums
+		//
+		this.albums = new M.panel('Albums',
+			'ciniki_gallery_main', 'albums',
+			'mc', 'medium', 'sectioned', 'ciniki.gallery.main.albums');
+		this.albums.data = {};
+		this.albums.sections = {
+			'albums':{'label':'', 'type':'simplegrid', 'num_cols':1,
+				'headerValues':null,
+				'addTxt':'New Album',
+				'addFn':'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.showAlbums();\',0);',
+				},
+		};
+		this.albums.sectionData = function(s) {
+			return this.data.albums;
+		};
+		this.albums.cellValue = function(s, i, j, d) {
+			return d.album.name + '<span class="count">' + d.album.count + '</span>';
+		};
+		this.albums.rowFn = function(s, i, d) {
+			return 'M.ciniki_gallery_main.showList(\'M.ciniki_gallery_main.showAlbums();\',\'' + d.album.id + '\',\'' + escape(d.album.name) + '\');';
+		};
+		this.albums.addButton('add', 'Add', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.showAlbums();\',0);');
+		this.albums.addClose('Back');
+
+		//
+		// The edit panel for an album
+		//
+		this.album = new M.panel('Edit Album',
+			'ciniki_gallery_main', 'album',
+			'mc', 'medium', 'sectioned', 'ciniki.gallery.main.album');
+		this.album.default_data = {};
+		this.album.data = {};
+		this.album.album_id = 0;
+		this.album.sections = {
+			'info':{'label':'Album Details', 'type':'simpleform', 'fields':{
+				'name':{'label':'Title', 'type':'text'},
+				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.albumWebFlags},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
+			}},
+			'_buttons':{'label':'', 'buttons':{
+				'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.saveAlbum();'},
+				'delete':{'label':'Remove Album', 'fn':'M.ciniki_gallery_main.deleteAlbum();'},
+			}},
+		};
+		this.album.fieldValue = function(s, i, d) { 
+			if( this.data[i] != null ) { return this.data[i]; } 
+			return ''; 
+		};
+		this.album.fieldHistoryArgs = function(s, i) {
+			return {'method':'ciniki.gallery.albumHistory', 'args':{'business_id':M.curBusinessID, 
+				'album_id':this.album_id, 'field':i}};
+		}
+		this.album.addButton('save', 'Save', 'M.ciniki_gallery_main.saveAlbum();');
+		this.album.addClose('Cancel');
+
 		//
 		// The panel to list the images by album
 		//
@@ -45,7 +107,7 @@ function ciniki_gallery_main() {
 		};
 		this.list.addDropImage = function(iid) {
 			var rsp = M.api.getJSON('ciniki.gallery.imageAdd',
-				{'business_id':M.curBusinessID, 'image_id':iid, 'album':M.ciniki_gallery_main.list.album});
+				{'business_id':M.curBusinessID, 'image_id':iid, 'album_id':M.ciniki_gallery_main.list.album_id});
 			if( rsp.stat != 'ok' ) {
 				M.api.err(rsp);
 				return false;
@@ -56,33 +118,9 @@ function ciniki_gallery_main() {
 			M.ciniki_gallery_main.showList();
 		};
 		this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',0,escape(M.ciniki_gallery_main.list.album));');
-		this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.showList();\');');
+//		this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.showList();\');');
+		this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.showList();\',M.ciniki_gallery_main.list.album_id);');
 		this.list.addClose('Back');
-
-		//
-		// The panel to display the list of albums
-		//
-		this.albums = new M.panel('Albums',
-			'ciniki_gallery_main', 'albums',
-			'mc', 'medium', 'sectioned', 'ciniki.gallery.main.albums');
-		this.albums.data = {};
-		this.albums.sections = {
-			'albums':{'label':'', 'type':'simplelist'},
-		};
-		this.albums.sectionData = function(s) {
-			return this.data;
-		};
-		this.albums.listValue = function(s, i, d) {
-			return d.album.name;
-		};
-		this.albums.listCount = function(s, i, d) {
-			return d.album.count;
-		};
-		this.albums.listFn = function(s, i, d) {
-			return 'M.ciniki_gallery_main.showList(\'M.ciniki_gallery_main.showAlbums();\',\'' + escape(d.album.name) + '\');';
-		};
-		this.albums.addButton('add', 'Add', 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',0,\'\');');
-		this.albums.addClose('Back');
 
 		//
 		// The panel to display the edit form
@@ -98,7 +136,8 @@ function ciniki_gallery_main() {
 			}},
 			'info':{'label':'Information', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
-				'album':{'label':'Album', 'type':'text', 'livesearch':'yes'},
+//				'album':{'label':'Album', 'type':'text', 'livesearch':'yes'},
+				'album_id':{'label':'Album', 'type':'select', 'options':{}},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
 			}},
 			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
@@ -114,29 +153,29 @@ function ciniki_gallery_main() {
 			if( this.data[i] != null ) { return this.data[i]; } 
 			return ''; 
 		};
-		this.edit.liveSearchCb = function(s, i, value) {
-			if( i == 'album' ) {
-				var rsp = M.api.getJSONBgCb('ciniki.gallery.imageAlbumSearch', 
-					{'business_id':M.curBusinessID, 
-					'start_needle':value, 'limit':25},
-					function(rsp) { 
-						M.ciniki_gallery_main.edit.liveSearchShow(s, i, M.gE(M.ciniki_gallery_main.edit.panelUID + '_' + i), rsp.albums); 
-					});
-			}
-		};
-		this.edit.liveSearchResultValue = function(s, f, i, j, d) {
-			if( f == 'album' ) { return d.album.name; }
-			return '';
-		};
-		this.edit.liveSearchResultRowFn = function(s, f, i, j, d) { 
-			if( f == 'album' ) {
-				return 'M.ciniki_gallery_main.edit.updateField(\'' + s + '\',\'album\',\'' + escape(d.album.name) + '\');';
-			}
-		};
-		this.edit.updateField = function(s, fid, result) {
-			M.gE(this.panelUID + '_' + fid).value = unescape(result);
-			this.removeLiveSearch(s, fid);
-		};
+//		this.edit.liveSearchCb = function(s, i, value) {
+//			if( i == 'album' ) {
+//				var rsp = M.api.getJSONBgCb('ciniki.gallery.imageAlbumSearch', 
+//					{'business_id':M.curBusinessID, 
+//					'start_needle':value, 'limit':25},
+//					function(rsp) { 
+//						M.ciniki_gallery_main.edit.liveSearchShow(s, i, M.gE(M.ciniki_gallery_main.edit.panelUID + '_' + i), rsp.albums); 
+//					});
+//			}
+//		};
+//		this.edit.liveSearchResultValue = function(s, f, i, j, d) {
+//			if( f == 'album' ) { return d.album.name; }
+//			return '';
+//		};
+//		this.edit.liveSearchResultRowFn = function(s, f, i, j, d) { 
+//			if( f == 'album' ) {
+//				return 'M.ciniki_gallery_main.edit.updateField(\'' + s + '\',\'album\',\'' + escape(d.album.name) + '\');';
+//			}
+//		};
+//		this.edit.updateField = function(s, fid, result) {
+//			M.gE(this.panelUID + '_' + fid).value = unescape(result);
+//			this.removeLiveSearch(s, fid);
+//		};
 		this.edit.fieldHistoryArgs = function(s, i) {
 			return {'method':'ciniki.gallery.imageHistory', 'args':{'business_id':M.curBusinessID, 
 				'gallery_image_id':this.gallery_image_id, 'field':i}};
@@ -184,64 +223,121 @@ function ciniki_gallery_main() {
 			this.showEdit(cb, args.img_id);
 		} else {
 			this.list.album = null;
-			this.showList(cb, null);
+			this.showAlbums(cb);
 		}
 		return true;
 	};
 
-	this.showList = function(cb, album) {
-		if( album != null ) {
-			this.list.album = album;
-		} 
-		// Decide which album to list
-		if( this.list.album != null ) {
-			var rsp = M.api.getJSONCb('ciniki.gallery.imageList', 
-				{'business_id':M.curBusinessID, 'album':this.list.album}, function(rsp) {
-					M.ciniki_gallery_main.showListFinish(cb, rsp);
+	this.showAlbums = function(cb) {
+		M.api.getJSONCb('ciniki.gallery.albumList', 
+			{'business_id':M.curBusinessID}, function(rsp) {
+				if( rsp.stat != 'ok' ) {
+					M.api.err(rsp);
+					return false;
+				}
+				var p = M.ciniki_gallery_main.albums;
+				p.data.albums = rsp.albums;
+				p.refresh();
+				p.show(cb);
+			});
+	};
+
+
+	this.editAlbum = function(cb, aid) {
+		if( aid != null ) { this.album.album_id = aid; }
+		if( this.album.album_id > 0 ) {
+			M.api.getJSONCb('ciniki.gallery.albumGet', 
+				{'business_id':M.curBusinessID, 'album_id':this.album.album_id}, function(rsp) {
+					if( rsp.stat != 'ok' ) {
+						M.api.err(rsp);
+						return false;
+					}
+					var p = M.ciniki_gallery_main.album;
+					p.data = rsp.album;
+					p.refresh();
+					p.show(cb);
 				});
 		} else {
-			var rsp = M.api.getJSONCb('ciniki.gallery.imageList', 
-				{'business_id':M.curBusinessID}, function(rsp) {
-					M.ciniki_gallery_main.showListFinish(cb, rsp);
-				});
+			this.album.reset();
+			this.album.data = {};
+			this.album.refresh();
+			this.album.show(cb);
 		}
 	};
 
-	this.showListFinish = function(cb, rsp) {
-		if( rsp.stat != 'ok' ) {
-			M.api.err(rsp);
-			return false;
-		}
-		if( rsp.images != null ) {
-			var p = M.ciniki_gallery_main.list;
-			if( rsp.album != null ) {
-				p.album = rsp.album;
+	this.saveAlbum = function() {
+		if( this.album.album_id > 0 ) {
+			var c = this.album.serializeFormData('no');
+			if( c != '' ) {
+				// Set the panel title if name changed on the album list
+				var new_name = this.album.formFieldValue(this.album.formField('name'), 'name');
+				if( this.album.data.name != new_name ) {
+					M.ciniki_gallery_main.list.title = new_name;
+				}
+				var rsp = M.api.postJSONFormData('ciniki.gallery.albumUpdate', 
+					{'business_id':M.curBusinessID, 
+					'album_id':this.album.album_id}, c,
+						function(rsp) {
+							if( rsp.stat != 'ok' ) {
+								M.api.err(rsp);
+								return false;
+							} 
+							M.ciniki_gallery_main.album.close();
+						});
+			} else {
+				M.ciniki_gallery_main.album.close();
 			}
-			p.data = rsp.images;
-			p.sections.images.label = rsp.album;
-			p.refresh();
-			p.show(cb);
-		} else if( rsp.albums != null ) {
-			var p = M.ciniki_gallery_main.albums;
-			p.data = rsp.albums;
-			p.refresh();
-			p.show(cb);
 		} else {
-			alert('Sorry, no images found');
+			var c = this.album.serializeForm('yes');
+			var rsp = M.api.postJSONFormData('ciniki.gallery.albumAdd', {'business_id':M.curBusinessID}, c,
+				function(rsp) {
+					if( rsp.stat != 'ok' ) {
+						M.api.err(rsp);
+						return false;
+					} 
+					M.ciniki_gallery_main.album.close();
+				});
 		}
 	};
 
-	this.showAlbums = function() {
-		this.list.album = null;
-		this.showList();
+	this.deleteAlbum = function() {
+		if( confirm('Are you sure you want to delete this album?') ) {
+			var rsp = M.api.getJSONCb('ciniki.gallery.albumDelete', 
+				{'business_id':M.curBusinessID, 'album_id':this.album.album_id}, function(rsp) {
+					if( rsp.stat != 'ok' ) {
+						M.api.err(rsp);
+						return false;
+					}
+					M.ciniki_gallery_main.album.destroy();
+					M.ciniki_gallery_main.list.close();
+				});
+		}
 	};
 
-	this.showEdit = function(cb, iid, album) {
-		if( iid != null ) {
-			this.edit.gallery_image_id = iid;
+	this.showList = function(cb, aid, aname) {
+		if( aid != null ) { this.list.album_id = aid; } 
+		if( aname != null ) { 
+			this.list.album_name = unescape(aname); 
+			this.list.title = unescape(aname);
 		}
+		M.api.getJSONCb('ciniki.gallery.imageList', {'business_id':M.curBusinessID, 
+			'album_id':this.list.album_id}, function(rsp) {
+				if( rsp.stat != 'ok' ) {
+					M.api.err(rsp);
+					return false;
+				}
+				var p = M.ciniki_gallery_main.list;
+				p.data = rsp.images;
+
+				p.refresh();
+				p.show(cb);
+			});
+	};
+
+	this.showEdit = function(cb, iid, aid) {
+		if( iid != null ) { this.edit.gallery_image_id = iid; }
 		if( this.edit.gallery_image_id > 0 ) {
-			var rsp = M.api.getJSONCb('ciniki.gallery.imageGet', 
+			M.api.getJSONCb('ciniki.gallery.imageGet', 
 				{'business_id':M.curBusinessID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
 						M.api.err(rsp);
@@ -249,20 +345,38 @@ function ciniki_gallery_main() {
 					}
 					var p = M.ciniki_gallery_main.edit;
 					p.data = rsp.image;
+					p.sections.info.fields.album_id.options = {};
+					if( rsp.albums != null ) {
+						for(i in rsp.albums) {
+							p.sections.info.fields.album_id.options[rsp.albums[i].album.id] = rsp.albums[i].album.name;
+						}
+					}
 					p.refresh();
 					p.show(cb);
 				});
 		} else {
 			this.edit.reset();
 			this.edit.data = {};
-			if( album != null ) {
-				this.edit.data['album'] = unescape(album);
+			if( aid != null ) {
+				this.edit.data['album_id'] = aid;
 			}
-			if( this.edit.data['album'] == 'Uncategorized' ) {
-				this.edit.data['album'] = '';
-			}
-			this.edit.refresh();
-			this.edit.show(cb);
+			M.api.getJSONCb('ciniki.gallery.albumList', {'business_id':M.curBusinessID}, function(rsp) {
+				if( rsp.stat != 'ok' ) {
+					M.api.err(rsp);
+					return false;
+				}
+				var p = M.ciniki_gallery_main.edit;
+				p.sections.info.fields.album_id.options = {};
+				if( rsp.albums != null ) {
+					for(i in rsp.albums) {
+						p.sections.info.fields.album_id.options[rsp.albums[i].album.id] = rsp.albums[i].album.name;
+					}
+				}
+				p.refresh();
+				p.show(cb);
+			});
+//			this.edit.refresh();
+//			this.edit.show(cb);
 		}
 	};
 

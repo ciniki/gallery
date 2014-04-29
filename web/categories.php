@@ -21,18 +21,26 @@
 //
 function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) {
 
-	$strsql = "SELECT DISTINCT album AS name "
-		. "FROM ciniki_gallery "
-		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND (ciniki_gallery.webflags&0x01) = 0 "
-		. "AND album <> '' "
-		. "ORDER BY album "
+	$strsql = "SELECT id, name, permalink "
+		. "FROM ciniki_gallery_albums "
+		. "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
+		. "AND name <> '' "
+		. "ORDER BY name "
 		. "";
-	
+		
+//	$strsql = "SELECT DISTINCT album AS name "
+//		. "FROM ciniki_gallery "
+//		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+//		. "AND (ciniki_gallery.webflags&0x01) = 0 "
+//		. "AND album <> '' "
+//		. "ORDER BY album "
+//		. "";
+//	
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
 		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
-			'fields'=>array('name')),
+			'fields'=>array('id', 'name', 'permalink')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -52,7 +60,7 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 		$strsql = "SELECT ciniki_gallery.image_id, ciniki_images.image "
 			. "FROM ciniki_gallery, ciniki_images "
 			. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-			. "AND album = '" . ciniki_core_dbQuote($ciniki, $cat['category']['name']) . "' "
+			. "AND album_id = '" . ciniki_core_dbQuote($ciniki, $cat['category']['id']) . "' "
 			. "AND ciniki_gallery.image_id = ciniki_images.id "
 			. "AND (ciniki_gallery.webflags&0x01) = 0 "
 			. "ORDER BY (ciniki_gallery.webflags&0x10) DESC, ciniki_gallery.date_added DESC "
