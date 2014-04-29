@@ -54,7 +54,6 @@ function ciniki_gallery_albumList($ciniki) {
 		. "GROUP BY ciniki_gallery_albums.id "
 		. "ORDER BY ciniki_gallery_albums.name "
 		. "";
-	error_log($strsql);
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
 		array('container'=>'albums', 'fname'=>'id', 'name'=>'album',
 			'fields'=>array('id', 'name', 'count')), 
