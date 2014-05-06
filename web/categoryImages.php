@@ -29,6 +29,30 @@
 // </images>
 //
 function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $args) {
+	//
+	// Get the gallery information
+	//
+	if( isset($args['type']) && $args['type'] == 'album' ) {
+		$strsql = "SELECT ciniki_gallery_albums.name, "
+			. "ciniki_gallery_albums.permalink, "
+			. "ciniki_gallery_albums.description "
+			. "FROM ciniki_gallery_albums "
+			. "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
+			. "AND ciniki_gallery_albums.permalink = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
+			. "";
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'album');
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( !isset($rc['album']) ) {
+			return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'1711', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
+		}
+		$album = $rc['album'];
+	} else {
+		$album = array('name'=>'');
+	}
+
 	$strsql = "SELECT ciniki_gallery.name AS title, "
 		. "ciniki_gallery.permalink, "
 		. "ciniki_gallery.image_id, "
@@ -75,6 +99,6 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
 			'caption'=>$caption, 'last_updated'=>$row['last_updated']));
 	}
 	
-	return array('stat'=>'ok', 'album_name'=>$album_name, 'images'=>$images);
+	return array('stat'=>'ok', 'album'=>$album, 'album_name'=>$album_name, 'images'=>$images);
 }
 ?>
