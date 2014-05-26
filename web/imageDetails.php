@@ -16,6 +16,7 @@ function ciniki_gallery_web_imageDetails($ciniki, $settings, $business_id, $perm
 		. "ciniki_gallery.image_id, "
 		. "ciniki_gallery.album_id, "
 		. "ciniki_gallery_albums.name AS album, "
+		. "ciniki_gallery_albums.permalink AS album_permalink, "
 		. "ciniki_gallery.webflags, ciniki_gallery.description, "
 		. "IF((ciniki_gallery.webflags&0x01)=1, 'yes', 'no') AS hidden, "
 		. "ciniki_gallery.date_added, ciniki_gallery.last_updated "
@@ -33,8 +34,10 @@ function ciniki_gallery_web_imageDetails($ciniki, $settings, $business_id, $perm
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'272', 'msg'=>'Unable to find gallery image'));
 	}
 	$image = array('title'=>$rc['image']['name'],
+		'permalink'=>$rc['image']['permalink'],
 		'album_id'=>$rc['image']['album_id'],
 		'category'=>$rc['image']['album'],
+		'category_permalink'=>$rc['image']['album_permalink'],
 		'image_id'=>$rc['image']['image_id'],
 		'details'=>'',
 		'description'=>$rc['image']['description'],
