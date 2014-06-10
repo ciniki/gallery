@@ -32,7 +32,7 @@ function ciniki_gallery_web_albumDetails($ciniki, $settings, $business_id, $args
 	//
 	// Get the gallery information
 	//
-	if( isset($args['type']) && $args['type'] == 'album' ) {
+	if( isset($args['type']) && $args['type'] == 'gallery' ) {
 		$strsql = "SELECT ciniki_gallery_albums.name, "
 			. "ciniki_gallery_albums.permalink, "
 			. "ciniki_gallery_albums.description "
