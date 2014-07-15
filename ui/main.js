@@ -337,6 +337,7 @@ function ciniki_gallery_main() {
 	this.showEdit = function(cb, iid, aid) {
 		if( iid != null ) { this.edit.gallery_image_id = iid; }
 		if( this.edit.gallery_image_id > 0 ) {
+			this.edit.sections._buttons.buttons.delete.visible = 'yes';
 			M.api.getJSONCb('ciniki.gallery.imageGet', 
 				{'business_id':M.curBusinessID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
@@ -355,6 +356,7 @@ function ciniki_gallery_main() {
 					p.show(cb);
 				});
 		} else {
+			this.edit.sections._buttons.buttons.delete.visible = 'no';
 			this.edit.reset();
 			this.edit.data = {};
 			if( aid != null ) {
