@@ -91,7 +91,7 @@ function ciniki_gallery_main() {
 			if( d.image.image_id > 0 && d.image.image_data != null && d.image.image_data != '' ) {
 				return d.image.image_data;
 			} else {
-				return '/ciniki-manage-themes/default/img/noimage_75.jpg';
+				return '/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg';
 			}
 		};
 		this.list.thumbTitle = function(s, i, d) {
