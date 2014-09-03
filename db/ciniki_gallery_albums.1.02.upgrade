@@ -1,0 +1,9 @@
+#
+# This file will add the uuid to ciniki_events
+# which is required for the sync to work.
+#
+ALTER TABLE ciniki_gallery_albums ADD COLUMN sequence tinyint unsigned not null AFTER webflags;
+ALTER TABLE ciniki_gallery_albums ADD COLUMN start_date datetime not null AFTER sequence;
+ALTER TABLE ciniki_gallery_albums ADD COLUMN end_date datetime not null AFTER start_date;
+UPDATE ciniki_gallery_albums SET sequence = 1;
+ALTER TABLE ciniki_gallery_albums COMMENT='v1.02';

@@ -16,6 +16,14 @@
 #
 #						0x01 - Private (do not display on website)
 #
+# sequence:				The sequence used to display the order of albums in the website.
+#
+# start_date:			The start date for the album, typically first of the month,
+#						or the date of creation.
+#
+# end_date:				The end date of the album, typically the end of the month, or
+#						the date of the latest photo in the album.
+#
 # description:			The description to be used on the website for the image.
 #
 # date_added:			The UTC date and time the image was added.
@@ -28,9 +36,12 @@ create table ciniki_gallery_albums (
 	name varchar(150) not null,
 	permalink varchar(200) not null,
 	webflags tinyint unsigned not null,
+	sequence tinyint unsigned not null,
+	start_date datetime not null,
+	end_date datetime not null,
 	description varchar(10000) not null,
 	date_added datetime not null,
 	last_updated datetime not null,
 	primary key (id),
 	index (business_id, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';

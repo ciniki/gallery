@@ -25,9 +25,21 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 		. "FROM ciniki_gallery_albums "
 		. "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
-		. "AND name <> '' "
-		. "ORDER BY name "
-		. "";
+		. "AND name <> '' ";
+	if( !isset($settings['page-gallery-album-sort']) 
+		|| $settings['page-gallery-album-sort'] == 'name-asc' ) {
+		$strsql .= "ORDER BY name ";
+	} elseif( $settings['page-gallery-album-sort'] == 'name-desc' ) {
+		$strsql .= "ORDER BY name DESC ";
+	} elseif( $settings['page-gallery-album-sort'] == 'sequence-asc' ) {
+		$strsql .= "ORDER BY sequence ASC, name ";
+	} elseif( $settings['page-gallery-album-sort'] == 'sequence-desc' ) {
+		$strsql .= "ORDER BY sequence DESC, name ";
+	} elseif( $settings['page-gallery-album-sort'] == 'startdate-desc' ) {
+		$strsql .= "ORDER BY start_date DESC, name ";
+	} elseif( $settings['page-gallery-album-sort'] == 'startdate-desc' ) {
+		$strsql .= "ORDER BY start_date DESC, name ";
+	}
 		
 //	$strsql = "SELECT DISTINCT album AS name "
 //		. "FROM ciniki_gallery "

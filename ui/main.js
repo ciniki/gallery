@@ -50,6 +50,11 @@ function ciniki_gallery_main() {
 			'info':{'label':'Album Details', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.albumWebFlags},
+				'sequence':{'label':'Sequence', 'active':'no', 'type':'text', 'size':'small'},
+			}},
+			'dates':{'label':'Album Dates', 'type':'simpleform', 'fields':{
+				'start_date':{'label':'Start', 'active':'no', 'type':'date'},
+				'end_date':{'label':'End', 'active':'no', 'type':'date'},
 			}},
 			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
 				'description':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
@@ -215,6 +220,21 @@ function ciniki_gallery_main() {
 		if( appContainer == null ) {
 			alert('App Error');
 			return false;
+		}
+	
+		this.album.sections.info.fields.sequence.active = 'no';
+		this.album.sections.dates.active = 'no';
+		this.album.sections.dates.fields.start_date.active = 'no';
+		this.album.sections.dates.fields.end_date.active = 'no';
+		if( M.curBusiness.modules['ciniki.gallery'] != null ) {
+			if( (M.curBusiness.modules['ciniki.gallery'].flags&0x02) > 0 ) {
+				this.album.sections.dates.active = 'yes';
+				this.album.sections.dates.fields.start_date.active = 'yes';
+			}
+			if( (M.curBusiness.modules['ciniki.gallery'].flags&0x04) > 0 ) {
+				this.album.sections.dates.active = 'yes';
+				this.album.sections.dates.fields.end_date.active = 'yes';
+			}
 		}
 	
 		if( args.add != null && args.add == 'yes' ) {
