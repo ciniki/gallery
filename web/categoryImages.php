@@ -63,6 +63,7 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
 		. "FROM ciniki_gallery_albums "
 		. "LEFT JOIN ciniki_gallery ON (ciniki_gallery_albums.id = ciniki_gallery.album_id "
 			. "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND ciniki_gallery.image_id > 0 "
 			. "AND (ciniki_gallery.webflags&0x01) = 0 "
 			. ") "
 		. "LEFT JOIN ciniki_images ON (ciniki_gallery.image_id = ciniki_images.id "
