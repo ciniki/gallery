@@ -122,7 +122,7 @@ function ciniki_gallery_main() {
 		this.list.addDropImageRefresh = function() {
 			M.ciniki_gallery_main.showList();
 		};
-		this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',0,escape(M.ciniki_gallery_main.list.album));');
+		this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',0,M.ciniki_gallery_main.list.album_id);');
 //		this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.showList();\');');
 		this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.showList();\',M.ciniki_gallery_main.list.album_id);');
 		this.list.addClose('Back');
