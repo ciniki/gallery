@@ -9,10 +9,11 @@
 # uuid:					The Universal Unique ID for the exhibition image.
 # business_id:			The ID of the business the exhibition is a part of.
 #
-# exhibition_id:		The ID of the exhibition the image is attached to.
 # name:					The name or title of the image.
 # permalink:			The permalink of the image to be used in the URL.
 # album:				The album the images belong to.
+# album_id:				The ID of the album in ciniki_gallery_albums.
+#
 # webflags:				Specify if the image should be displayed on the website.
 #
 #						0x01 - Private (do not display on website)
