@@ -92,21 +92,6 @@ function ciniki_gallery_main() {
 		this.list.sectionData = function(s) {
 			return this.data;
 		};
-		this.list.thumbSrc = function(s, i, d) {
-			if( d.image.image_id > 0 && d.image.image_data != null && d.image.image_data != '' ) {
-				return d.image.image_data;
-			} else {
-				return '/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg';
-			}
-		};
-		this.list.thumbTitle = function(s, i, d) {
-			if( d.image.name != null ) { return d.image.name; }
-			return '';
-		};
-		this.list.thumbID = function(s, i, d) {
-			if( d.image.image_id != null ) { return d.image.image_id; }
-			return 0;
-		};
 		this.list.thumbFn = function(s, i, d) {
 			return 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',\'' + d.image.id + '\');';
 		};
