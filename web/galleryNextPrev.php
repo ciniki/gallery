@@ -37,7 +37,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	//
 	// Get the previous and next photos
 	//
-	$strsql = "SELECT id, name, permalink "
+	$strsql = "SELECT id, name, image_id, permalink "
 		. "FROM ciniki_gallery "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND (webflags&0x01) = 0 ";
@@ -72,7 +72,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	// get the first image
 	//
 	if( $rc['num_rows'] < 3 ) {
-		$strsql = "SELECT id, name, permalink "
+		$strsql = "SELECT id, name, image_id, permalink "
 			. "FROM ciniki_gallery "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND (webflags&0x01) = 0 ";
@@ -97,7 +97,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	// If the image is at begining of the gallery, then get the last image
 	//
 	if( $offset == 0 ) {
-		$strsql = "SELECT id, name, permalink "
+		$strsql = "SELECT id, name, image_id, permalink "
 			. "FROM ciniki_gallery "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND (webflags&0x01) = 0 ";
