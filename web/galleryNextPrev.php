@@ -20,6 +20,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	$strsql = "SELECT COUNT(*) AS pos_num "
 		. "FROM ciniki_gallery "
 		. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_gallery.image_id > 0 "
 		. "AND (ciniki_gallery.webflags&0x01) = 0 ";
 	if( $args['type'] == 'album' ) {
 		$strsql .= "AND ciniki_gallery.album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
@@ -40,6 +41,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 	$strsql = "SELECT id, name, image_id, permalink "
 		. "FROM ciniki_gallery "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_gallery.image_id > 0 "
 		. "AND (webflags&0x01) = 0 ";
 	if( $args['type'] == 'album' ) {
 		$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
@@ -75,6 +77,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 		$strsql = "SELECT id, name, image_id, permalink "
 			. "FROM ciniki_gallery "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_gallery.image_id > 0 "
 			. "AND (webflags&0x01) = 0 ";
 		if( $args['type'] == 'album' ) {
 			$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";
@@ -100,6 +103,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
 		$strsql = "SELECT id, name, image_id, permalink "
 			. "FROM ciniki_gallery "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND ciniki_gallery.image_id > 0 "
 			. "AND (webflags&0x01) = 0 ";
 		if( $args['type'] == 'album' ) {
 			$strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['img']['album_id']) . "' ";

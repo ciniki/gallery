@@ -86,6 +86,12 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 		}
 	}
 
+	foreach($categories as $cid => $cat) {
+		if( !isset($cat['category']['image_id']) || $cat['category']['image_id'] == 0 ) {
+			unset($categories[$cid]);
+		}
+	}
+
 	return array('stat'=>'ok', 'categories'=>$categories);	
 }
 ?>
