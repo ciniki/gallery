@@ -61,7 +61,7 @@ function ciniki_gallery_main() {
 			}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.saveAlbum();'},
-				'delete':{'label':'Remove Album', 'fn':'M.ciniki_gallery_main.deleteAlbum();'},
+				'delete':{'label':'Remove Album', 'visible':function() {return (M.ciniki_gallery_main.album.album_id>0?'yes':'no');}, 'fn':'M.ciniki_gallery_main.deleteAlbum();'},
 			}},
 		};
 		this.album.fieldValue = function(s, i, d) { 
