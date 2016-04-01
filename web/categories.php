@@ -49,9 +49,9 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 //		. "ORDER BY album "
 //		. "";
 //	
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
-		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+	$rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.gallery', array(
+		array('container'=>'categories', 'fname'=>'name', 
 			'fields'=>array('id', 'name', 'permalink')),
 		));
 	if( $rc['stat'] != 'ok' ) {
@@ -72,7 +72,7 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 		$strsql = "SELECT ciniki_gallery.image_id, ciniki_images.image "
 			. "FROM ciniki_gallery, ciniki_images "
 			. "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-			. "AND album_id = '" . ciniki_core_dbQuote($ciniki, $cat['category']['id']) . "' "
+			. "AND album_id = '" . ciniki_core_dbQuote($ciniki, $cat['id']) . "' "
 			. "AND ciniki_gallery.image_id = ciniki_images.id "
 			. "AND (ciniki_gallery.webflags&0x01) = 0 "
 			. "ORDER BY (ciniki_gallery.webflags&0x10) DESC, ciniki_gallery.date_added DESC "
@@ -82,12 +82,12 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
 			return $rc;
 		}
 		if( isset($rc['image']) ) {
-			$categories[$cnum]['category']['image_id'] = $rc['image']['image_id'];
+			$categories[$cnum]['image_id'] = $rc['image']['image_id'];
 		}
 	}
 
 	foreach($categories as $cid => $cat) {
-		if( !isset($cat['category']['image_id']) || $cat['category']['image_id'] == 0 ) {
+		if( !isset($cat['image_id']) || $cat['image_id'] == 0 ) {
 			unset($categories[$cid]);
 		}
 	}
