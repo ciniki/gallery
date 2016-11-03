@@ -31,7 +31,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
         return $rc;
     }
     if( !isset($rc['position']['pos_num']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'273', 'msg'=>'Unable to load image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.21', 'msg'=>'Unable to load image'));
     }
     $offset = $rc['position']['pos_num'];
 
@@ -52,7 +52,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
     } elseif( $offset > 0 ) {
         $strsql .= "LIMIT " . ($offset-1) . ", 3";
     } else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'277', 'msg'=>'Unable to load image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.22', 'msg'=>'Unable to load image'));
     }
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'next');
     if( $rc['stat'] != 'ok' ) {

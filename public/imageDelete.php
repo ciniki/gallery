@@ -46,7 +46,7 @@ function ciniki_gallery_imageDelete(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['item']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'483', 'msg'=>'Gallery image does not exist'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.11', 'msg'=>'Gallery image does not exist'));
     }
     $item = $rc['item'];
     

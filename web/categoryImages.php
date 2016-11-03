@@ -46,7 +46,7 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
             return $rc;
         }
         if( !isset($rc['album']) ) {
-            return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'1711', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
+            return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.19', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
         }
         $album = $rc['album'];
     } else {
@@ -76,7 +76,7 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
         $strsql .= "AND ciniki_gallery_albums.permalink = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
             . "";
     } else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'268', 'msg'=>"Unable to find images."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.20', 'msg'=>"Unable to find images."));
     }
 
     //

@@ -19,7 +19,7 @@
 function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $args) {
 
     if( !isset($ciniki['business']['modules']['ciniki.gallery']) ) {
-        return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'3643', 'msg'=>"I'm sorry, the page you requested does not exist."));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.24', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
     $page = array(
         'title'=>$args['page_title'],
@@ -111,7 +111,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             }
         }
         if( $cur_album == null ) {
-            return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'3644', 'msg'=>'Album not found'));
+            return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.25', 'msg'=>'Album not found'));
         }
     }
 
@@ -155,7 +155,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             return $rc;
         }
         if( !isset($rc['images']) || count($rc['images']) == 0 ) {
-            return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'3645', 'msg'=>'No images found.'));
+            return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.26', 'msg'=>'No images found.'));
         }
         $album_images = $rc['images'];
     }
@@ -187,7 +187,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             $last_image = $image;
         }
         if( $cur_image == null ) {
-            return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'3646', 'msg'=>"I'm sorry, but we couldn't find the image your requested."));
+            return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.27', 'msg'=>"I'm sorry, but we couldn't find the image your requested."));
         }
         if( count($album_images) == 1 ) {
             $prev_image = null;

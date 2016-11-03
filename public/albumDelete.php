@@ -51,12 +51,12 @@ function ciniki_gallery_albumDelete(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['album']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1705', 'msg'=>'Gallery album does not exist'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.5', 'msg'=>'Gallery album does not exist'));
     }
     $album = $rc['album'];
 
     if( $album['num_images'] > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1706', 'msg'=>'The album still has images in it.  Please remove all images before deleting the album.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.6', 'msg'=>'The album still has images in it.  Please remove all images before deleting the album.'));
     }
     
     //

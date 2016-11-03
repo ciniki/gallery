@@ -81,7 +81,7 @@ function ciniki_gallery_albumGet($ciniki) {
         return $rc;
     }
     if( !isset($rc['albums']) ) {
-        return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'1704', 'msg'=>'Unable to find image'));
+        return array('stat'=>'ok', 'err'=>array('code'=>'ciniki.gallery.7', 'msg'=>'Unable to find image'));
     }
     $album = $rc['albums'][0]['album'];
     

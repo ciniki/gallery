@@ -62,7 +62,7 @@ function ciniki_gallery_albumUpdate(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1707', 'msg'=>'You already have an album with this name, please choose another name'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.8', 'msg'=>'You already have an album with this name, please choose another name'));
         }
     } 
 

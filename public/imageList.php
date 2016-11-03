@@ -116,7 +116,7 @@ function ciniki_gallery_imageList($ciniki) {
         if( isset($image['image']['image_id']) && $image['image']['image_id'] > 0 ) {
             $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $image['image']['image_id'], 75);
             if( $rc['stat'] != 'ok' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1501', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.13', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
             }
             $images[$inum]['image']['image_data'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
         }

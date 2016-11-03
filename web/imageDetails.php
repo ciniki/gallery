@@ -31,7 +31,7 @@ function ciniki_gallery_web_imageDetails($ciniki, $settings, $business_id, $perm
         return $rc;
     }
     if( !isset($rc['image']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'272', 'msg'=>'Unable to find gallery image'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.23', 'msg'=>'Unable to find gallery image'));
     }
     $image = array('title'=>$rc['image']['name'],
         'permalink'=>$rc['image']['permalink'],

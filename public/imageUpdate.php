@@ -57,7 +57,7 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
             return $rc;
         }
         if( !isset($rc['item']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'264', 'msg'=>'Gallery image not found'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.14', 'msg'=>'Gallery image not found'));
         }
         $item = $rc['item'];
 
@@ -81,7 +81,7 @@ function ciniki_gallery_imageUpdate(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'265', 'msg'=>'You already have an image with this name, please choose another name'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.15', 'msg'=>'You already have an image with this name, please choose another name'));
         }
     } 
 

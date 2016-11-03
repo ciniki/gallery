@@ -21,7 +21,7 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
     // Must be a sysadmin to run this
     //
     if( ($ciniki['session']['user']['perms'] & 0x01) != 0x01 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1708', 'msg'=>'Access denied'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.16', 'msg'=>'Access denied'));
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
@@ -62,7 +62,7 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
             return $rc;
         }
         if( isset($rc['rows']) && count($rc['rows']) > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1710', 'msg'=>'Album already exists: ' . $args['name']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.17', 'msg'=>'Album already exists: ' . $args['name']));
         }
 
         $rc = ciniki_core_objectAdd($ciniki, $gallery['business_id'], 'ciniki.gallery.album', $args, 0x07);

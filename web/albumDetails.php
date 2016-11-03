@@ -46,7 +46,7 @@ function ciniki_gallery_web_albumDetails($ciniki, $settings, $business_id, $args
             return $rc;
         }
         if( !isset($rc['album']) ) {
-            return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'1712', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
+            return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.18', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
         }
         $album = $rc['album'];
     } else {
