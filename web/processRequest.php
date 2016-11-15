@@ -233,6 +233,9 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
     // Display the list of thumbnails for an album
     //
     elseif( $display == 'album' ) {
+        if( isset($cur_album['description']) && $cur_album['description'] != '' ) {
+            $page['blocks'][] = array('type'=>'content', 'content'=>$cur_album['description']);
+        }
         $page['blocks'][] = array('type'=>'gallery', 'base_url'=>$args['base_url'] . '/' . $cur_album['permalink'], 'images'=>$album_images);
     } 
     
