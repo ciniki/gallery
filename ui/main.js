@@ -19,6 +19,7 @@ function ciniki_gallery_main() {
     this.albums.data = {};
     this.albums.sections = {
         'categories':{'label':'Categories', 'type':'simplegrid', 'num_cols':1, 'aside':'yes',
+            'visible':function() { return M.modFlagSet('ciniki.gallery', 0x08); },
             },
         'albums':{'label':'Albums', 'type':'simplegrid', 'num_cols':1,
             'headerValues':null,
