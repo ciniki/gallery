@@ -57,6 +57,7 @@ function ciniki_gallery_albumGet($ciniki) {
     // Get the main information
     //
     $strsql = "SELECT ciniki_gallery_albums.id, "
+        . "ciniki_gallery_albums.category, "
         . "ciniki_gallery_albums.name, "
         . "ciniki_gallery_albums.permalink, "
         . "ciniki_gallery_albums.webflags, "
@@ -71,8 +72,7 @@ function ciniki_gallery_albumGet($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
         array('container'=>'albums', 'fname'=>'id', 'name'=>'album',
-            'fields'=>array('id', 'name', 'permalink', 'webflags', 
-                'sequence', 'start_date', 'end_date', 'description'),
+            'fields'=>array('id', 'category', 'name', 'permalink', 'webflags', 'sequence', 'start_date', 'end_date', 'description'),
             'utctotz'=>array('start_date'=>array('timezone'=>$intl_timezone, 'format'=>$date_format),
                 'end_date'=>array('timezone'=>$intl_timezone, 'format'=>$date_format),
             )),

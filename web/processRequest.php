@@ -51,6 +51,36 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
     $uri_split = $args['uri_split'];
 
     //
+    // Check if categories enabled, get the list and display as submenu
+    //
+    if( ciniki_core_checkModuleFlags($ciniki, 'ciniki.gallery', 0x08) ) {
+        $selected_category = '';
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+        $strsql = "SELECT DISTINCT category "
+            . "FROM ciniki_gallery_albums "
+            . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "ORDER BY category "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
+        $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.gallery', 'categories', 'category');
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        $page['submenu'] = array();
+        foreach($rc['categories'] as $cat) {
+            $permalink = ciniki_core_makePermalink($cat);
+            $page['submenu'][] = array('name'=>$cat, 'url'=>$args['base_url'] . '/' . $permalink);
+            //
+            // Check if category selected
+            //
+            if( isset($uri_split[0]) && $uri_split[0] == $permalink ) {
+                $selected_category = $cat;
+                $cat_permalink = array_shift($uri_split);
+            }
+        }
+    }
+
+    //
     // Get the list of albums
     //
     $strsql = "SELECT ciniki_gallery_albums.id, "
@@ -65,8 +95,11 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             . "AND (ciniki_gallery.webflags&0x01) = 0 "
             . ") "
         . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-        . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
-        . "AND ciniki_gallery_albums.name <> '' "
+        . "AND (ciniki_gallery_albums.webflags&0x01) = 0 ";
+    if( isset($selected_category) ) {
+        $strsql .= "AND ciniki_gallery_albums.category = '" . ciniki_core_dbQuote($ciniki, $selected_category) . "' ";
+    }
+    $strsql .= "AND ciniki_gallery_albums.name <> '' "
         . "GROUP BY ciniki_gallery_albums.id "
         . "HAVING num_images > 0 "
         . "";

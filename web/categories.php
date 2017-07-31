@@ -2,7 +2,7 @@
 //
 // Description
 // -----------
-// This function will return a list of categories for the web galleries, 
+// This function will return a list of categories(albums) for the web galleries, 
 // along with the images for each category highlight.
 //
 // Arguments
@@ -26,6 +26,9 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
         . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
         . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
         . "AND name <> '' ";
+    if( isset($args['category']) ) {
+        $strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['category']) . "' ";
+    }
     if( !isset($settings['page-gallery-album-sort']) 
         || $settings['page-gallery-album-sort'] == 'name-asc' ) {
         $strsql .= "ORDER BY name ";

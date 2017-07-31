@@ -11,6 +11,7 @@
 #
 # name:                 The name or title of the image.
 # permalink:            The permalink of the image to be used in the URL.
+#
 # album:                The album the images belong to.
 # album_id:             The ID of the album in ciniki_gallery_albums.
 #
