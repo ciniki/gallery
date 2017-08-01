@@ -85,7 +85,6 @@ function ciniki_gallery_albumList(&$ciniki) {
     } elseif( $settings['page-gallery-album-sort'] == 'startdate-desc' ) {
         $strsql .= "ORDER BY start_date DESC, category, name ";
     }
-    error_log($strsql);
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.gallery', array(
         array('container'=>'albums', 'fname'=>'id', 'fields'=>array('id', 'category', 'name', 'count')), 
         ));
