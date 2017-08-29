@@ -386,7 +386,7 @@ function ciniki_gallery_main() {
                 p.sections.info.fields.album_id.options = {};
                 if( rsp.albums != null ) {
                     for(i in rsp.albums) {
-                        p.sections.info.fields.album_id.options[rsp.albums[i].album.id] = rsp.albums[i].album.name;
+                        p.sections.info.fields.album_id.options[rsp.albums[i].id] = rsp.albums[i].name;
                     }
                 }
                 p.refresh();
