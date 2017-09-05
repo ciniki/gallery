@@ -40,6 +40,15 @@ function ciniki_gallery_hooks_webOptions(&$ciniki, $business_id, $args) {
     }
 
     $pages['ciniki.gallery'] = array('name'=>'Gallery', 'options'=>array(
+        array('label'=>'Image Quality',
+            'setting'=>'page-gallery-image-quality', 
+            'type'=>'toggle',
+            'value'=>(isset($settings['page-gallery-image-quality'])?$settings['page-gallery-image-quality']:'no'),
+            'toggles'=>array(
+                array('value'=>'regular', 'label'=>'Regular'),
+                array('value'=>'high', 'label'=>'High'),
+                ),
+            ), 
 /*        array('label'=>'Sidebar',
             'setting'=>'page-artistprofiles-sidebar', 
             'type'=>'toggle',

@@ -276,7 +276,10 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
     // Display an image from an album
     //
     elseif( $display == 'image' ) {
-        $block = array('type'=>'galleryimage', 'image'=>$cur_image);
+        $block = array('type'=>'galleryimage', 'image'=>$cur_image, 
+            'quality'=>((isset($settings['page-gallery-image-quality']) && $settings['page-gallery-image-quality'] != '') ? $settings['page-gallery-image-quality'] : 'regular'),
+            'size'=>((isset($settings['page-gallery-image-size']) && $settings['page-gallery-image-size'] != '') ? $settings['page-gallery-image-size'] : 'regular'),
+            );
         if( $prev_image != null ) {
             $block['prev'] = array('url'=>$args['base_url'] . '/' . $cur_album['permalink'] . '/' . $prev_image['permalink']);
         }
