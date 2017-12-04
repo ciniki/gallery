@@ -8,7 +8,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 // type:            The list to return, either by category or year.
 //
 //                  - category
@@ -28,7 +28,7 @@
 //      ...
 // </images>
 //
-function ciniki_gallery_web_albumDetails($ciniki, $settings, $business_id, $args) {
+function ciniki_gallery_web_albumDetails($ciniki, $settings, $tnid, $args) {
     //
     // Get the gallery information
     //
@@ -37,7 +37,7 @@ function ciniki_gallery_web_albumDetails($ciniki, $settings, $business_id, $args
             . "ciniki_gallery_albums.permalink, "
             . "ciniki_gallery_albums.description "
             . "FROM ciniki_gallery_albums "
-            . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
             . "AND ciniki_gallery_albums.permalink = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
             . "";

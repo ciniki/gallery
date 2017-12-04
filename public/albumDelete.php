@@ -16,7 +16,7 @@ function ciniki_gallery_albumDelete(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'album_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Album'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -26,10 +26,10 @@ function ciniki_gallery_albumDelete(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
-    $rc = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.albumDelete', 0); 
+    $rc = ciniki_gallery_checkAccess($ciniki, $args['tnid'], 'ciniki.gallery.albumDelete', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -41,9 +41,9 @@ function ciniki_gallery_albumDelete(&$ciniki) {
         . "COUNT(ciniki_gallery.id) AS num_images "
         . "FROM ciniki_gallery_albums "
         . "LEFT JOIN ciniki_gallery ON (ciniki_gallery_albums.id = ciniki_gallery.album_id "
-            . "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_gallery_albums.id = '" . ciniki_core_dbQuote($ciniki, $args['album_id']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'album');
@@ -63,6 +63,6 @@ function ciniki_gallery_albumDelete(&$ciniki) {
     // Remove the album
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
-    return ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.gallery.album', $args['album_id'], $album['uuid'], 0x07);
+    return ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.gallery.album', $args['album_id'], $album['uuid'], 0x07);
 }
 ?>

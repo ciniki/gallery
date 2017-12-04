@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_gallery_web_imageDetails($ciniki, $settings, $business_id, $permalink) {
+function ciniki_gallery_web_imageDetails($ciniki, $settings, $tnid, $permalink) {
 
     $strsql = "SELECT ciniki_gallery.id, "
         . "ciniki_gallery.name, ciniki_gallery.permalink, "
@@ -21,10 +21,10 @@ function ciniki_gallery_web_imageDetails($ciniki, $settings, $business_id, $perm
         . "IF((ciniki_gallery.webflags&0x01)=1, 'yes', 'no') AS hidden, "
         . "ciniki_gallery.date_added, ciniki_gallery.last_updated "
         . "FROM ciniki_gallery, ciniki_gallery_albums "
-        . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_gallery.permalink = '" . ciniki_core_dbQuote($ciniki, $permalink) . "' "
         . "AND ciniki_gallery.album_id = ciniki_gallery_albums.id "
-        . "AND ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'image');
     if( $rc['stat'] != 'ok' ) {

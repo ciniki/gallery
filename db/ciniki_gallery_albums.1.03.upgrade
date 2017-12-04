@@ -1,5 +1,5 @@
 #
 # Add the category column.
 #
-ALTER TABLE ciniki_gallery_albums ADD COLUMN category varchar(50) not null AFTER business_id;
+ALTER TABLE ciniki_gallery_albums ADD COLUMN category varchar(50) not null AFTER tnid;
 ALTER TABLE ciniki_gallery_albums COMMENT='v1.03';

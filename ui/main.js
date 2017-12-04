@@ -49,7 +49,7 @@ function ciniki_gallery_main() {
     };
     this.albums.open = function(cb, cat) {
         if( cat != null ) { this.category = cat; }
-        var args = {'business_id':M.curBusinessID};
+        var args = {'tnid':M.curTenantID};
         if( M.modFlagOn('ciniki.gallery', 0x08) ) {
             args['category'] = this.category;
             this.size = 'medium narrowaside';
@@ -103,12 +103,12 @@ function ciniki_gallery_main() {
         return ''; 
     };
     this.album.fieldHistoryArgs = function(s, i) {
-        return {'method':'ciniki.gallery.albumHistory', 'args':{'business_id':M.curBusinessID, 
+        return {'method':'ciniki.gallery.albumHistory', 'args':{'tnid':M.curTenantID, 
             'album_id':this.album_id, 'field':i}};
     }
     this.album.liveSearchCb = function(s, i, value) {
         if( i == 'category' ) {
-            var rsp = M.api.getJSONBgCb('ciniki.gallery.categorySearch', {'business_id':M.curBusinessID, 'start_needle':value}, function(rsp) { 
+            var rsp = M.api.getJSONBgCb('ciniki.gallery.categorySearch', {'tnid':M.curTenantID, 'start_needle':value}, function(rsp) { 
                 M.ciniki_gallery_main.album.liveSearchShow(s, i, M.gE(M.ciniki_gallery_main.album.panelUID + '_' + i), rsp.categories); 
             });
         }
@@ -147,7 +147,7 @@ function ciniki_gallery_main() {
     };
     this.list.addDropImage = function(iid) {
         var rsp = M.api.getJSON('ciniki.gallery.imageAdd',
-            {'business_id':M.curBusinessID, 'image_id':iid, 'album_id':M.ciniki_gallery_main.list.album_id});
+            {'tnid':M.curTenantID, 'image_id':iid, 'album_id':M.ciniki_gallery_main.list.album_id});
         if( rsp.stat != 'ok' ) {
             M.api.err(rsp);
             return false;
@@ -191,7 +191,7 @@ function ciniki_gallery_main() {
         return ''; 
     };
     this.edit.fieldHistoryArgs = function(s, i) {
-        return {'method':'ciniki.gallery.imageHistory', 'args':{'business_id':M.curBusinessID, 
+        return {'method':'ciniki.gallery.imageHistory', 'args':{'tnid':M.curTenantID, 
             'gallery_image_id':this.gallery_image_id, 'field':i}};
     }
     this.edit.addDropImage = function(iid) {
@@ -234,12 +234,12 @@ function ciniki_gallery_main() {
         this.album.sections.dates.active = 'no';
         this.album.sections.dates.fields.start_date.active = 'no';
         this.album.sections.dates.fields.end_date.active = 'no';
-        if( M.curBusiness.modules['ciniki.gallery'] != null ) {
-            if( (M.curBusiness.modules['ciniki.gallery'].flags&0x02) > 0 ) {
+        if( M.curTenant.modules['ciniki.gallery'] != null ) {
+            if( (M.curTenant.modules['ciniki.gallery'].flags&0x02) > 0 ) {
                 this.album.sections.dates.active = 'yes';
                 this.album.sections.dates.fields.start_date.active = 'yes';
             }
-            if( (M.curBusiness.modules['ciniki.gallery'].flags&0x04) > 0 ) {
+            if( (M.curTenant.modules['ciniki.gallery'].flags&0x04) > 0 ) {
                 this.album.sections.dates.active = 'yes';
                 this.album.sections.dates.fields.end_date.active = 'yes';
             }
@@ -262,7 +262,7 @@ function ciniki_gallery_main() {
         if( aid != null ) { this.album.album_id = aid; }
         if( this.album.album_id > 0 ) {
             M.api.getJSONCb('ciniki.gallery.albumGet', 
-                {'business_id':M.curBusinessID, 'album_id':this.album.album_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'album_id':this.album.album_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -290,7 +290,7 @@ function ciniki_gallery_main() {
                     M.ciniki_gallery_main.list.title = new_name;
                 }
                 var rsp = M.api.postJSONFormData('ciniki.gallery.albumUpdate', 
-                    {'business_id':M.curBusinessID, 
+                    {'tnid':M.curTenantID, 
                     'album_id':this.album.album_id}, c,
                         function(rsp) {
                             if( rsp.stat != 'ok' ) {
@@ -304,7 +304,7 @@ function ciniki_gallery_main() {
             }
         } else {
             var c = this.album.serializeForm('yes');
-            var rsp = M.api.postJSONFormData('ciniki.gallery.albumAdd', {'business_id':M.curBusinessID}, c,
+            var rsp = M.api.postJSONFormData('ciniki.gallery.albumAdd', {'tnid':M.curTenantID}, c,
                 function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -318,7 +318,7 @@ function ciniki_gallery_main() {
     this.deleteAlbum = function() {
         if( confirm('Are you sure you want to delete this album?') ) {
             var rsp = M.api.getJSONCb('ciniki.gallery.albumDelete', 
-                {'business_id':M.curBusinessID, 'album_id':this.album.album_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'album_id':this.album.album_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -335,7 +335,7 @@ function ciniki_gallery_main() {
             this.list.album_name = unescape(aname); 
             this.list.title = unescape(aname);
         }
-        M.api.getJSONCb('ciniki.gallery.imageList', {'business_id':M.curBusinessID, 
+        M.api.getJSONCb('ciniki.gallery.imageList', {'tnid':M.curTenantID, 
             'album_id':this.list.album_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
@@ -354,7 +354,7 @@ function ciniki_gallery_main() {
         if( this.edit.gallery_image_id > 0 ) {
             this.edit.sections._buttons.buttons.delete.visible = 'yes';
             M.api.getJSONCb('ciniki.gallery.imageGet', 
-                {'business_id':M.curBusinessID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -377,7 +377,7 @@ function ciniki_gallery_main() {
             if( aid != null ) {
                 this.edit.data['album_id'] = aid;
             }
-            M.api.getJSONCb('ciniki.gallery.albumList', {'business_id':M.curBusinessID}, function(rsp) {
+            M.api.getJSONCb('ciniki.gallery.albumList', {'tnid':M.curTenantID}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
@@ -402,7 +402,7 @@ function ciniki_gallery_main() {
             var c = this.edit.serializeFormData('no');
             if( c != '' ) {
                 var rsp = M.api.postJSONFormData('ciniki.gallery.imageUpdate', 
-                    {'business_id':M.curBusinessID, 
+                    {'tnid':M.curTenantID, 
                     'gallery_image_id':this.edit.gallery_image_id}, c,
                         function(rsp) {
                             if( rsp.stat != 'ok' ) {
@@ -416,7 +416,7 @@ function ciniki_gallery_main() {
             }
         } else {
             var c = this.edit.serializeForm('yes');
-            var rsp = M.api.postJSONFormData('ciniki.gallery.imageAdd', {'business_id':M.curBusinessID}, c,
+            var rsp = M.api.postJSONFormData('ciniki.gallery.imageAdd', {'tnid':M.curTenantID}, c,
                 function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -430,7 +430,7 @@ function ciniki_gallery_main() {
     this.deleteImage = function() {
         if( confirm('Are you sure you want to delete this image?') ) {
             var rsp = M.api.getJSONCb('ciniki.gallery.imageDelete', 
-                {'business_id':M.curBusinessID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;

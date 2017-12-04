@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get gallery images for.
+// tnid:     The ID of the tenant to get gallery images for.
 // type:            The type of participants to get.  Refer to participantAdd for 
 //                  more information on types.
 //
@@ -20,7 +20,7 @@ function ciniki_gallery_imageList($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'album_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Album'),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -29,10 +29,10 @@ function ciniki_gallery_imageList($ciniki) {
     $args = $rc['args'];
     
     //  
-    // Check access to business_id as owner, or sys admin. 
+    // Check access to tnid as owner, or sys admin. 
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
-    $ac = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.imageList');
+    $ac = ciniki_gallery_checkAccess($ciniki, $args['tnid'], 'ciniki.gallery.imageList');
     if( $ac['stat'] != 'ok' ) { 
         return $ac;
     }   
@@ -48,7 +48,7 @@ function ciniki_gallery_imageList($ciniki) {
         $strsql = "SELECT IF(album='', 'Uncategorized', album) AS album, "
             . "COUNT(*) AS count "
             . "FROM ciniki_gallery "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "GROUP BY album "
             . "ORDER BY album "
             . "";
@@ -84,7 +84,7 @@ function ciniki_gallery_imageList($ciniki) {
         . "ciniki_gallery.image_id, "
         . "ciniki_gallery.description "
         . "FROM ciniki_gallery "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     if( isset($args['album_id']) && $args['album_id'] != '' ) {
         $strsql .= "AND album_id = '" . ciniki_core_dbQuote($ciniki, $args['album_id']) . "' ";
@@ -114,7 +114,7 @@ function ciniki_gallery_imageList($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
     foreach($images as $inum => $image) {
         if( isset($image['image']['image_id']) && $image['image']['image_id'] > 0 ) {
-            $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $image['image']['image_id'], 75);
+            $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['tnid'], $image['image']['image_id'], 75);
             if( $rc['stat'] != 'ok' ) {
                 return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.13', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
             }

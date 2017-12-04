@@ -44,7 +44,7 @@ function ciniki_gallery_fieldupdate() {
     };
 
     //
-    // Grab the stats for the business from the database and present the list of customers.
+    // Grab the stats for the tenant from the database and present the list of customers.
     //
     this.showList = function(cb, field, fieldname) {
         if( field != null ) {
@@ -59,7 +59,7 @@ function ciniki_gallery_fieldupdate() {
         // Grab list of recently updated customers
         //
         var rsp = M.api.getJSON('ciniki.gallery.fieldList', 
-            {'business_id':M.curBusinessID, 'field':this.list.field});
+            {'tnid':M.curTenantID, 'field':this.list.field});
         if( rsp['stat'] != 'ok' ) {
             M.api.err(rsp);
             return false;
@@ -78,7 +78,7 @@ function ciniki_gallery_fieldupdate() {
             var c = this.list.formFieldValue(this.list.sections.items.fields[i], i);
             if( this.list.data[i].item.name != c ) {
                 var rsp = M.api.getJSON('ciniki.gallery.fieldUpdate', 
-                    {'business_id':M.curBusinessID, 'field':this.list.field,
+                    {'tnid':M.curTenantID, 'field':this.list.field,
                     'old_value':this.list.data[i].item.name,
                     'new_value':c});
                 if( rsp.stat != 'ok' ) {

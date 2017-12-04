@@ -3,13 +3,13 @@
 // Description
 // -----------
 // This funciton will return a list of the latest added items in the art catalog. 
-// These are used on the homepage of the business website.
+// These are used on the homepage of the tenant website.
 //
 // Arguments
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get images for.
+// tnid:     The ID of the tenant to get images for.
 // limit:           The maximum number of images to return.
 //
 // Returns
@@ -24,7 +24,7 @@
 //      ...
 // </images>
 //
-function ciniki_gallery_web_latestImages($ciniki, $settings, $business_id, $limit) {
+function ciniki_gallery_web_latestImages($ciniki, $settings, $tnid, $limit) {
 
     $strsql = "SELECT name AS title, permalink, image_id, "
         . "IF(ciniki_images.last_updated > ciniki_gallery.last_updated, "
@@ -32,7 +32,7 @@ function ciniki_gallery_web_latestImages($ciniki, $settings, $business_id, $limi
         . "UNIX_TIMESTAMP(ciniki_gallery.last_updated)) AS last_updated "
         . "FROM ciniki_gallery "
         . "LEFT JOIN ciniki_images ON (ciniki_gallery.image_id = ciniki_images.id) "
-        . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_gallery.image_id > 0 "
         . "AND (ciniki_gallery.webflags&0x01) = 0 "
         . "";

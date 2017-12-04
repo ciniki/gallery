@@ -8,7 +8,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 // type:            The list to return, either by category or year.
 //
 //                  - category
@@ -28,7 +28,7 @@
 //      ...
 // </images>
 //
-function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $args) {
+function ciniki_gallery_web_categoryImages($ciniki, $settings, $tnid, $args) {
     //
     // Get the gallery information
     //
@@ -37,7 +37,7 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
             . "ciniki_gallery_albums.permalink, "
             . "ciniki_gallery_albums.description "
             . "FROM ciniki_gallery_albums "
-            . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
             . "AND ciniki_gallery_albums.permalink = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
             . "";
@@ -62,14 +62,14 @@ function ciniki_gallery_web_categoryImages($ciniki, $settings, $business_id, $ar
             . "UNIX_TIMESTAMP(ciniki_gallery.last_updated)) AS last_updated "
         . "FROM ciniki_gallery_albums "
         . "LEFT JOIN ciniki_gallery ON (ciniki_gallery_albums.id = ciniki_gallery.album_id "
-            . "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_gallery.image_id > 0 "
             . "AND (ciniki_gallery.webflags&0x01) = 0 "
             . ") "
         . "LEFT JOIN ciniki_images ON (ciniki_gallery.image_id = ciniki_images.id "
-            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . ") "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
         . "";
     if( isset($args['type']) && $args['type'] == 'album' ) {

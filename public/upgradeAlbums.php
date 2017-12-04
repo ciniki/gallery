@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business the image belongs to.
+// tnid:         The ID of the tenant the image belongs to.
 // name:                The name of the image.  
 //
 // Returns
@@ -28,9 +28,9 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
 
-    $strsql = "SELECT DISTINCT business_id, album "
+    $strsql = "SELECT DISTINCT tnid, album "
         . "FROM ciniki_gallery "
-        . "ORDER BY business_id, album "
+        . "ORDER BY tnid, album "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'item');
     if( $rc['stat'] != 'ok' ) {
@@ -50,11 +50,11 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
             );
         
         //
-        // Check if album already exists for the business
+        // Check if album already exists for the tenant
         //
         $strsql = "SELECT id, name "
             . "FROM ciniki_gallery_albums "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $gallery['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $gallery['tnid']) . "' "
             . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'item');
@@ -65,7 +65,7 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.17', 'msg'=>'Album already exists: ' . $args['name']));
         }
 
-        $rc = ciniki_core_objectAdd($ciniki, $gallery['business_id'], 'ciniki.gallery.album', $args, 0x07);
+        $rc = ciniki_core_objectAdd($ciniki, $gallery['tnid'], 'ciniki.gallery.album', $args, 0x07);
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }
@@ -76,7 +76,7 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
         //
         $strsql = "SELECT ciniki_gallery.id "
             . "FROM ciniki_gallery "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $gallery['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $gallery['tnid']) . "' "
             . "AND album = '" . ciniki_core_dbQuote($ciniki, $gallery['album']) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.gallery', 'item');
@@ -90,7 +90,7 @@ function ciniki_gallery_upgradeAlbums(&$ciniki) {
         //
         $album_args = array('album_id'=>$album_id);
         foreach($images as $img) {
-            $rc = ciniki_core_objectUpdate($ciniki, $gallery['business_id'], 'ciniki.gallery.image', $img['id'], $album_args, 0x07);
+            $rc = ciniki_core_objectUpdate($ciniki, $gallery['tnid'], 'ciniki.gallery.image', $img['id'], $album_args, 0x07);
             if( $rc['stat'] != 'ok' ) { 
                 return $rc;
             }

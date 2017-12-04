@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to add the image to.
+// tnid:         The ID of the tenant to add the image to.
 // gallery_image_id:    The ID of the image to get.
 //
 // Returns
@@ -19,7 +19,7 @@ function ciniki_gallery_albumGet($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'album_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Album'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -28,10 +28,10 @@ function ciniki_gallery_albumGet($ciniki) {
     $args = $rc['args'];
 
     //
-    // Load business timezone info
+    // Load tenant timezone info
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $args['tnid']);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -41,10 +41,10 @@ function ciniki_gallery_albumGet($ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
-    $rc = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.albumGet'); 
+    $rc = ciniki_gallery_checkAccess($ciniki, $args['tnid'], 'ciniki.gallery.albumGet'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -66,7 +66,7 @@ function ciniki_gallery_albumGet($ciniki) {
         . "ciniki_gallery_albums.end_date, "
         . "ciniki_gallery_albums.description "
         . "FROM ciniki_gallery_albums "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_gallery_albums.id = '" . ciniki_core_dbQuote($ciniki, $args['album_id']) . "' "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');

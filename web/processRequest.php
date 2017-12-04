@@ -8,7 +8,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get post for.
+// tnid:     The ID of the tenant to get post for.
 //
 // args:            The possible arguments for posts
 //
@@ -16,9 +16,9 @@
 // Returns
 // -------
 //
-function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $args) {
+function ciniki_gallery_web_processRequest(&$ciniki, $settings, $tnid, $args) {
 
-    if( !isset($ciniki['business']['modules']['ciniki.gallery']) ) {
+    if( !isset($ciniki['tenant']['modules']['ciniki.gallery']) ) {
         return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.24', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
     $page = array(
@@ -58,7 +58,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
         $strsql = "SELECT DISTINCT category "
             . "FROM ciniki_gallery_albums "
-            . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY category "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
@@ -91,10 +91,10 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
         . "FROM ciniki_gallery_albums "
         . "LEFT JOIN ciniki_gallery ON ("
             . "ciniki_gallery_albums.id = ciniki_gallery.album_id "
-            . "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND (ciniki_gallery.webflags&0x01) = 0 "
             . ") "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_gallery_albums.webflags&0x01) = 0 ";
     if( isset($selected_category) ) {
         $strsql .= "AND ciniki_gallery_albums.category = '" . ciniki_core_dbQuote($ciniki, $selected_category) . "' ";
@@ -173,10 +173,10 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             . "FROM ciniki_gallery "
             . "LEFT JOIN ciniki_images ON ("
                 . "ciniki_gallery.image_id = ciniki_images.id "
-                . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                 . ") "
             . "WHERE ciniki_gallery.album_id = '" . ciniki_core_dbQuote($ciniki, $cur_album['id']) . "' "
-            . "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_gallery.image_id > 0 "
             . "AND (ciniki_gallery.webflags&0x01) = 0 "
             . "ORDER BY ciniki_gallery.date_added DESC ";
@@ -245,7 +245,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $business_id, $a
             //
             $strsql = "SELECT ciniki_gallery.image_id, ciniki_images.image "
                 . "FROM ciniki_gallery, ciniki_images "
-                . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                 . "AND album_id = '" . ciniki_core_dbQuote($ciniki, $album['id']) . "' "
                 . "AND ciniki_gallery.image_id = ciniki_images.id "
                 . "AND (ciniki_gallery.webflags&0x01) = 0 "

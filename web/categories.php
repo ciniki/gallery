@@ -9,7 +9,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 //
 // Returns
 // -------
@@ -19,11 +19,11 @@
 //      ...
 // </categories>
 //
-function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) {
+function ciniki_gallery_web_categories($ciniki, $settings, $tnid, $args) {
 
     $strsql = "SELECT id, name, permalink "
         . "FROM ciniki_gallery_albums "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_gallery_albums.webflags&0x01) = 0 "
         . "AND name <> '' ";
     if( isset($args['category']) ) {
@@ -46,7 +46,7 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
         
 //  $strsql = "SELECT DISTINCT album AS name "
 //      . "FROM ciniki_gallery "
-//      . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+//      . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
 //      . "AND (ciniki_gallery.webflags&0x01) = 0 "
 //      . "AND album <> '' "
 //      . "ORDER BY album "
@@ -74,7 +74,7 @@ function ciniki_gallery_web_categories($ciniki, $settings, $business_id, $args) 
         //
         $strsql = "SELECT ciniki_gallery.image_id, ciniki_images.image "
             . "FROM ciniki_gallery, ciniki_images "
-            . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND album_id = '" . ciniki_core_dbQuote($ciniki, $cat['id']) . "' "
             . "AND ciniki_gallery.image_id = ciniki_images.id "
             . "AND (ciniki_gallery.webflags&0x01) = 0 "

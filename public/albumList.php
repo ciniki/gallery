@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get gallery images for.
+// tnid:     The ID of the tenant to get gallery images for.
 // type:            The type of participants to get.  Refer to participantAdd for 
 //                  more information on types.
 //
@@ -20,7 +20,7 @@ function ciniki_gallery_albumList(&$ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Category'), 
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -32,17 +32,17 @@ function ciniki_gallery_albumList(&$ciniki) {
     // Load the web settings to determine how gallery albums should be sorted
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQuery');
-    $rc =  ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_web_settings', 'business_id', $args['business_id'], 'ciniki.web', 'settings', 'page-gallery');
+    $rc =  ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_web_settings', 'tnid', $args['tnid'], 'ciniki.web', 'settings', 'page-gallery');
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
     $settings = $rc['settings'];
     
     //  
-    // Check access to business_id as owner, or sys admin. 
+    // Check access to tnid as owner, or sys admin. 
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'private', 'checkAccess');
-    $ac = ciniki_gallery_checkAccess($ciniki, $args['business_id'], 'ciniki.gallery.albumList');
+    $ac = ciniki_gallery_checkAccess($ciniki, $args['tnid'], 'ciniki.gallery.albumList');
     if( $ac['stat'] != 'ok' ) { 
         return $ac;
     }   
@@ -63,9 +63,9 @@ function ciniki_gallery_albumList(&$ciniki) {
         . "FROM ciniki_gallery_albums "
         . "LEFT JOIN ciniki_gallery ON ("
             . "ciniki_gallery_albums.id = ciniki_gallery.album_id "
-            . "AND ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . ") "
-        . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     if( isset($args['category']) ) {
         $strsql .= "AND ciniki_gallery_albums.category = '" . ciniki_core_dbQuote($ciniki, $args['category']) . "' ";
@@ -103,7 +103,7 @@ function ciniki_gallery_albumList(&$ciniki) {
     if( ciniki_core_checkModuleFlags($ciniki, 'ciniki.gallery', 0x08) ) {
         $strsql = "SELECT DISTINCT category "
             . "FROM ciniki_gallery_albums "
-            . "WHERE ciniki_gallery_albums.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE ciniki_gallery_albums.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY category "
             . "";
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.gallery', array(

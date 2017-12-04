@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $args) {
+function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $tnid, $args) {
 // $permalink, $img, $type) {
 
     //
@@ -19,7 +19,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
     //
     $strsql = "SELECT COUNT(*) AS pos_num "
         . "FROM ciniki_gallery "
-        . "WHERE ciniki_gallery.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_gallery.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_gallery.image_id > 0 "
         . "AND (ciniki_gallery.webflags&0x01) = 0 ";
     if( $args['type'] == 'album' ) {
@@ -40,7 +40,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
     //
     $strsql = "SELECT id, name, image_id, permalink "
         . "FROM ciniki_gallery "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_gallery.image_id > 0 "
         . "AND (webflags&0x01) = 0 ";
     if( $args['type'] == 'album' ) {
@@ -76,7 +76,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
     if( $rc['num_rows'] < 3 ) {
         $strsql = "SELECT id, name, image_id, permalink "
             . "FROM ciniki_gallery "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_gallery.image_id > 0 "
             . "AND (webflags&0x01) = 0 ";
         if( $args['type'] == 'album' ) {
@@ -102,7 +102,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $business_id, $a
     if( $offset == 0 ) {
         $strsql = "SELECT id, name, image_id, permalink "
             . "FROM ciniki_gallery "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_gallery.image_id > 0 "
             . "AND (webflags&0x01) = 0 ";
         if( $args['type'] == 'album' ) {
