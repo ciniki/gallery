@@ -50,7 +50,7 @@ function ciniki_gallery_web_galleryNextPrev($ciniki, $settings, $tnid, $args) {
     if( $offset == 0 ) {
         $strsql .= "LIMIT 3 ";
     } elseif( $offset > 0 ) {
-        $strsql .= "LIMIT " . ($offset-1) . ", 3";
+        $strsql .= "LIMIT " . (intval($offset)-1) . ", 3";
     } else {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.22', 'msg'=>'Unable to load image'));
     }

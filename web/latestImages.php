@@ -38,7 +38,7 @@ function ciniki_gallery_web_latestImages($ciniki, $settings, $tnid, $limit) {
         . "";
     if( $limit != '' && $limit > 0 && is_int($limit) ) {
         $strsql .= "ORDER BY ciniki_gallery.date_added DESC "
-            . "LIMIT $limit ";
+            . "LIMIT " . intval($limit) . " ";
     } else {
         $strsql .= "ORDER BY ciniki_gallery.date_added DESC "
             . "LIMIT 4 ";
