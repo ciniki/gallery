@@ -112,7 +112,7 @@ function ciniki_gallery_albumList(&$ciniki) {
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }
-        $rsp['categories'] = $rc['categories'];
+        $rsp['categories'] = isset($rc['categories']) ? $rc['categories'] : array();
     }
 
     return $rsp;
