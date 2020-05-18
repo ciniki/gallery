@@ -226,7 +226,7 @@ function ciniki_gallery_main() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_gallery_main', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
     
@@ -316,9 +316,9 @@ function ciniki_gallery_main() {
     };
 
     this.deleteAlbum = function() {
-        if( confirm('Are you sure you want to delete this album?') ) {
+        M.confirm('Are you sure you want to delete this album?',null,function() {
             var rsp = M.api.getJSONCb('ciniki.gallery.albumDelete', 
-                {'tnid':M.curTenantID, 'album_id':this.album.album_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'album_id':M.ciniki_gallery_main.album.album_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -326,7 +326,7 @@ function ciniki_gallery_main() {
                     M.ciniki_gallery_main.album.destroy();
                     M.ciniki_gallery_main.list.close();
                 });
-        }
+        });
     };
 
     this.showList = function(cb, aid, aname) {
@@ -428,15 +428,15 @@ function ciniki_gallery_main() {
     };
 
     this.deleteImage = function() {
-        if( confirm('Are you sure you want to delete this image?') ) {
+        M.confirm('Are you sure you want to delete this image?',null,function() {
             var rsp = M.api.getJSONCb('ciniki.gallery.imageDelete', 
-                {'tnid':M.curTenantID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'gallery_image_id':M.ciniki_gallery_main.edit.gallery_image_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
                     }
                     M.ciniki_gallery_main.edit.close();
                 });
-        }
+        });
     };
 }
