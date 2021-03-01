@@ -44,7 +44,7 @@ function ciniki_gallery_main() {
             return 'M.ciniki_gallery_main.albums.open(null,\'' + escape(d.category) + '\');';
         }
         if( s == 'albums' ) {
-            return 'M.ciniki_gallery_main.showList(\'M.ciniki_gallery_main.albums.open();\',\'' + d.id + '\',\'' + escape(d.name) + '\');';
+            return 'M.ciniki_gallery_main.list.open(\'M.ciniki_gallery_main.albums.open();\',\'' + d.id + '\',\'' + escape(d.name) + '\');';
         }
     };
     this.albums.open = function(cb, cat) {
@@ -130,11 +130,12 @@ function ciniki_gallery_main() {
     //
     // The panel to list the images by album
     //
-    this.list = new M.panel('Album', 'ciniki_gallery_main', 'list', 'mc', 'wide', 'sectioned', 'ciniki.gallery.main.list');
+    this.list = new M.panel('Album', 'ciniki_gallery_main', 'list', 'mc', 'full', 'sectioned', 'ciniki.gallery.main.list');
     this.list.data = {};
     this.list.album = '';
+    this.list.nplist = [];
     this.list.sections = {
-        'images':{'label':'', 'type':'simplethumbs'},
+        'images':{'label':'', 'imgsize':'medium', 'type':'simplethumbs'},
         };
     this.list.noData = function(s) {
         return this.sections[s].noData;
@@ -143,7 +144,7 @@ function ciniki_gallery_main() {
         return this.data;
     };
     this.list.thumbFn = function(s, i, d) {
-        return 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',\'' + d.image.id + '\');';
+        return 'M.ciniki_gallery_main.edit.open(\'M.ciniki_gallery_main.list.open();\',\'' + d.image.id + '\',null,M.ciniki_gallery_main.list.nplist);';
     };
     this.list.addDropImage = function(iid) {
         var rsp = M.api.getJSON('ciniki.gallery.imageAdd',
@@ -155,19 +156,40 @@ function ciniki_gallery_main() {
         return true;
     };
     this.list.addDropImageRefresh = function() {
-        M.ciniki_gallery_main.showList();
+        M.ciniki_gallery_main.list.open();
     };
-    this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.showEdit(\'M.ciniki_gallery_main.showList();\',0,M.ciniki_gallery_main.list.album_id);');
-//      this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.showList();\');');
-    this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.showList();\',M.ciniki_gallery_main.list.album_id);');
+    this.list.open = function(cb, aid, aname) {
+        if( aid != null ) { this.album_id = aid; } 
+        if( aname != null ) { 
+            this.album_name = unescape(aname); 
+            this.title = unescape(aname);
+        }
+        M.api.getJSONCb('ciniki.gallery.imageList', {'tnid':M.curTenantID, 
+            'album_id':this.album_id}, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                var p = M.ciniki_gallery_main.list;
+                p.data = rsp.images;
+                p.nplist = (rsp.nplist != null ? rsp.nplist : null);
+                p.refresh();
+                p.show(cb);
+            });
+    };
+    this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.edit.open(\'M.ciniki_gallery_main.list.open();\',0,M.ciniki_gallery_main.list.album_id);');
+//      this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.list.open();\');');
+    this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.list.open();\',M.ciniki_gallery_main.list.album_id);');
     this.list.addClose('Back');
 
     //
     // The panel to display the edit form
     //
-    this.edit = new M.panel('Edit Image', 'ciniki_gallery_main', 'edit', 'mc', 'medium', 'sectioned', 'ciniki.gallery.main.edit');
+    this.edit = new M.panel('Edit Image', 'ciniki_gallery_main', 'edit', 'mc', 'xlarge', 'sectioned', 'ciniki.gallery.main.edit');
     this.edit.default_data = {};
+    this.edit.gallery_image_id = 0;
     this.edit.data = {};
+    this.edit.nplist = [];
     this.edit.sections = {
         '_image':{'label':'Photo', 'type':'imageform', 'fields':{
             'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
@@ -182,10 +204,19 @@ function ciniki_gallery_main() {
             'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
         }},
         '_buttons':{'label':'', 'buttons':{
-            'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.saveImage();'},
+            'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.edit.save();'},
             'delete':{'label':'Remove Image', 'fn':'M.ciniki_gallery_main.deleteImage();'},
         }},
     };
+    this.edit.imageURL = function(s, i, field, img_id, mN) {
+        if( M.modFlagOn('ciniki.gallery', 0x10) ) {
+            return M.api.getBinaryURL('ciniki.images.get', {'tnid':M.curTenantID, 
+                'image_id':img_id, 'version':'original', 'maxwidth':0, 'maxheight':1200});
+        } else {
+            return M.api.getBinaryURL('ciniki.images.get', {'tnid':M.curTenantID, 
+                'image_id':img_id, 'version':'original', 'maxwidth':0, 'maxheight':600});
+        }
+    }
     this.edit.fieldValue = function(s, i, d) { 
         if( this.data[i] != null ) { return this.data[i]; } 
         return ''; 
@@ -198,8 +229,96 @@ function ciniki_gallery_main() {
         this.setFieldValue('image_id', iid);
         return true;
     };
-    this.edit.addButton('save', 'Save', 'M.ciniki_gallery_main.saveImage();');
+    this.edit.open = function(cb, iid, aid, list) {
+        if( iid != null ) { this.gallery_image_id = iid; }
+        if( list != null ) { this.nplist = list; }
+        if( this.gallery_image_id > 0 ) {
+            this.sections._buttons.buttons.delete.visible = 'yes';
+            M.api.getJSONCb('ciniki.gallery.imageGet', 
+                {'tnid':M.curTenantID, 'gallery_image_id':this.gallery_image_id}, function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    }
+                    var p = M.ciniki_gallery_main.edit;
+                    p.data = rsp.image;
+                    p.sections.info.fields.album_id.options = {};
+                    if( rsp.albums != null ) {
+                        for(i in rsp.albums) {
+                            p.sections.info.fields.album_id.options[rsp.albums[i].album.id] = rsp.albums[i].album.name;
+                        }
+                    }
+                    p.refresh();
+                    p.show(cb);
+                });
+        } else {
+            this.sections._buttons.buttons.delete.visible = 'no';
+            this.reset();
+            this.data = {};
+            if( aid != null ) {
+                this.data['album_id'] = aid;
+            }
+            M.api.getJSONCb('ciniki.gallery.albumList', {'tnid':M.curTenantID}, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                var p = M.ciniki_gallery_main.edit;
+                p.sections.info.fields.album_id.options = {};
+                if( rsp.albums != null ) {
+                    for(i in rsp.albums) {
+                        p.sections.info.fields.album_id.options[rsp.albums[i].id] = rsp.albums[i].name;
+                    }
+                }
+                p.refresh();
+                p.show(cb);
+            });
+        }
+    }
+    this.edit.save = function(cb) {
+        if( cb == null ) { cb = 'M.ciniki_gallery_main.edit.close();'; }
+        if( this.gallery_image_id > 0 ) {
+            var c = this.serializeFormData('no');
+            if( c != '' ) {
+                M.api.postJSONFormData('ciniki.gallery.imageUpdate', {'tnid':M.curTenantID, 'gallery_image_id':this.gallery_image_id}, c,
+                    function(rsp) {
+                        if( rsp.stat != 'ok' ) {
+                            M.api.err(rsp);
+                            return false;
+                        } 
+                        eval(cb);
+                    });
+            } else {
+                eval(cb);
+            }
+        } else {
+            var c = this.serializeForm('yes');
+            M.api.postJSONFormData('ciniki.gallery.imageAdd', {'tnid':M.curTenantID}, c,
+                function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    } 
+                    eval(cb);
+                });
+        }
+    }
+    this.edit.nextButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.gallery_image_id) < (this.nplist.length - 1) ) {
+            return 'M.ciniki_gallery_main.edit.save(\'M.ciniki_gallery_main.edit.open(null,' + this.nplist[this.nplist.indexOf('' + this.gallery_image_id) + 1] + ');\');';
+        }
+        return null;
+    }
+    this.edit.prevButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.gallery_image_id) > 0 ) {
+            return 'M.ciniki_gallery_main.edit.save(\'M.ciniki_gallery_main.edit.open(null,' + this.nplist[this.nplist.indexOf('' + this.gallery_image_id) - 1] + ');\');';
+        }
+        return null;
+    }
+    this.edit.addButton('save', 'Save', 'M.ciniki_gallery_main.edit.save();');
     this.edit.addClose('Cancel');
+    this.edit.addButton('next', 'Next');
+    this.edit.addLeftButton('prev', 'Prev');
 
     //
     // The tools available to work on customer records
@@ -229,6 +348,8 @@ function ciniki_gallery_main() {
             M.alert('App Error');
             return false;
         }
+
+        this.edit.size = M.modFlagOn('ciniki.gallery', 0x10) ? 'xlarge' : 'medium';
     
         this.album.sections.info.fields.sequence.active = 'no';
         this.album.sections.dates.active = 'no';
@@ -246,9 +367,9 @@ function ciniki_gallery_main() {
         }
     
         if( args.add != null && args.add == 'yes' ) {
-            this.showEdit(cb, 0, args.album);
+            this.edit.open(cb, 0, args.album);
         } else if( args.img_id != null && args.img_id > 0 ) {
-            this.showEdit(cb, args.img_id);
+            this.edit.open(cb, args.img_id, null, null);
         } else {
             this.list.album = null;
             this.albums.open(cb, null);
@@ -329,103 +450,8 @@ function ciniki_gallery_main() {
         });
     };
 
-    this.showList = function(cb, aid, aname) {
-        if( aid != null ) { this.list.album_id = aid; } 
-        if( aname != null ) { 
-            this.list.album_name = unescape(aname); 
-            this.list.title = unescape(aname);
-        }
-        M.api.getJSONCb('ciniki.gallery.imageList', {'tnid':M.curTenantID, 
-            'album_id':this.list.album_id}, function(rsp) {
-                if( rsp.stat != 'ok' ) {
-                    M.api.err(rsp);
-                    return false;
-                }
-                var p = M.ciniki_gallery_main.list;
-                p.data = rsp.images;
 
-                p.refresh();
-                p.show(cb);
-            });
-    };
 
-    this.showEdit = function(cb, iid, aid) {
-        if( iid != null ) { this.edit.gallery_image_id = iid; }
-        if( this.edit.gallery_image_id > 0 ) {
-            this.edit.sections._buttons.buttons.delete.visible = 'yes';
-            M.api.getJSONCb('ciniki.gallery.imageGet', 
-                {'tnid':M.curTenantID, 'gallery_image_id':this.edit.gallery_image_id}, function(rsp) {
-                    if( rsp.stat != 'ok' ) {
-                        M.api.err(rsp);
-                        return false;
-                    }
-                    var p = M.ciniki_gallery_main.edit;
-                    p.data = rsp.image;
-                    p.sections.info.fields.album_id.options = {};
-                    if( rsp.albums != null ) {
-                        for(i in rsp.albums) {
-                            p.sections.info.fields.album_id.options[rsp.albums[i].album.id] = rsp.albums[i].album.name;
-                        }
-                    }
-                    p.refresh();
-                    p.show(cb);
-                });
-        } else {
-            this.edit.sections._buttons.buttons.delete.visible = 'no';
-            this.edit.reset();
-            this.edit.data = {};
-            if( aid != null ) {
-                this.edit.data['album_id'] = aid;
-            }
-            M.api.getJSONCb('ciniki.gallery.albumList', {'tnid':M.curTenantID}, function(rsp) {
-                if( rsp.stat != 'ok' ) {
-                    M.api.err(rsp);
-                    return false;
-                }
-                var p = M.ciniki_gallery_main.edit;
-                p.sections.info.fields.album_id.options = {};
-                if( rsp.albums != null ) {
-                    for(i in rsp.albums) {
-                        p.sections.info.fields.album_id.options[rsp.albums[i].id] = rsp.albums[i].name;
-                    }
-                }
-                p.refresh();
-                p.show(cb);
-            });
-//          this.edit.refresh();
-//          this.edit.show(cb);
-        }
-    };
-
-    this.saveImage = function() {
-        if( this.edit.gallery_image_id > 0 ) {
-            var c = this.edit.serializeFormData('no');
-            if( c != '' ) {
-                var rsp = M.api.postJSONFormData('ciniki.gallery.imageUpdate', 
-                    {'tnid':M.curTenantID, 
-                    'gallery_image_id':this.edit.gallery_image_id}, c,
-                        function(rsp) {
-                            if( rsp.stat != 'ok' ) {
-                                M.api.err(rsp);
-                                return false;
-                            } 
-                            M.ciniki_gallery_main.edit.close();
-                        });
-            } else {
-                M.ciniki_gallery_main.edit.close();
-            }
-        } else {
-            var c = this.edit.serializeForm('yes');
-            var rsp = M.api.postJSONFormData('ciniki.gallery.imageAdd', {'tnid':M.curTenantID}, c,
-                function(rsp) {
-                    if( rsp.stat != 'ok' ) {
-                        M.api.err(rsp);
-                        return false;
-                    } 
-                    M.ciniki_gallery_main.edit.close();
-                });
-        }
-    };
 
     this.deleteImage = function() {
         M.confirm('Are you sure you want to delete this image?',null,function() {

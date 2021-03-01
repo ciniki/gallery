@@ -17,6 +17,11 @@ function ciniki_gallery_flags($ciniki, $modules) {
         array('flag'=>array('bit'=>'2', 'name'=>'Album Start Date')),
         array('flag'=>array('bit'=>'3', 'name'=>'Album End Date')),
         array('flag'=>array('bit'=>'4', 'name'=>'Categories')),
+        // 0x10
+        array('flag'=>array('bit'=>'5', 'name'=>'Large UI Images')),
+//        array('flag'=>array('bit'=>'6', 'name'=>'')),
+//        array('flag'=>array('bit'=>'7', 'name'=>'')),
+//        array('flag'=>array('bit'=>'8', 'name'=>'')),
         );
 
     return array('stat'=>'ok', 'flags'=>$flags);

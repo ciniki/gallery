@@ -112,9 +112,11 @@ function ciniki_gallery_imageList($ciniki) {
     // Add thumbnail information into list
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
+    $image_ids = array();
     foreach($images as $inum => $image) {
+        $image_ids[] = $image['image']['id'];
         if( isset($image['image']['image_id']) && $image['image']['image_id'] > 0 ) {
-            $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['tnid'], $image['image']['image_id'], 75);
+            $rc = ciniki_images_loadCacheThumbnail($ciniki, $args['tnid'], $image['image']['image_id'], 300);
             if( $rc['stat'] != 'ok' ) {
                 return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.13', 'msg'=>'Unable to load image', 'err'=>$rc['err']));
             }
@@ -123,6 +125,6 @@ function ciniki_gallery_imageList($ciniki) {
     }
 
 //  return array('stat'=>'ok', 'album'=>$args['album'], 'images'=>$images);
-    return array('stat'=>'ok', 'images'=>$images);
+    return array('stat'=>'ok', 'images'=>$images, 'nplist'=>$image_ids);
 }
 ?>
