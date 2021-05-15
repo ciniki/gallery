@@ -17,8 +17,8 @@
 function ciniki_gallery_wng_albumProcess(&$ciniki, $tnid, &$request, $section) {
 
     $blocks = array();
-    //
-    // Check to make sure the module is enabled
+    $s = isset($section['settings']) ? $section['settings'] : array();
+// // Check to make sure the module is enabled
     //
     if( !isset($ciniki['tenant']['modules']['ciniki.gallery']) ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.wng.30', 'msg'=>"Content not available."));
@@ -87,11 +87,24 @@ function ciniki_gallery_wng_albumProcess(&$ciniki, $tnid, &$request, $section) {
         }
         $images = isset($rc['images']) ? $rc['images'] : array();
         
+        if( isset($album['name']) && $album['name'] != '' 
+            && isset($s['title-show']) && $s['title-show'] == 'yes'
+            ) {
+            $blocks[] = array(
+                'type' => 'text',
+                'title' => $album['name'],
+                'content' => $album['description'],
+                );
+        }
+        
         $blocks[] = array(
             'type' => 'carousel',
+            'sequence' => $section['sequence'],
             'thumbnails' => 'yes',
             'titles' => 'yes',
             'items' => $images,
+            'speed' => isset($s['speed']) ? $s['speed'] : 0,
+            'padded' => isset($s['padded']) && $s['padded'] == 'yes' ? 'yes' : 'no',
             );
     }
 

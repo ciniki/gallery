@@ -53,6 +53,22 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
             'album-id' => array('label'=>'Album', 'type'=>'select', 'options'=>$albums, 
                 'complex_options'=>array('value'=>'id', 'name'=>'name'),
                 ),
+            'title-show' => array('label'=>'Album Title & Description', 'type'=>'toggle', 'default'=>'no', 'toggles'=>array(
+                'no' => 'Hidden',
+                'yes' => 'Visible',
+                )),
+            'speed'=>array('label'=>'Speed', 'type'=>'toggle', 'default'=>'medium', 'toggles'=>array(    
+                'none' => 'No Auto Advance',
+                'xslow' => 'X-Slow',
+                'slow' => 'Slow',
+                'medium' => 'Medium',
+                'fast' => 'Fast',
+                'xfast' => 'X-Fast',
+                )),
+            'padded' => array('label'=>'Image Format', 'type'=>'toggle', 'default'=>'no', 'toggles'=>array(
+                'no' => 'Cropped',
+                'yes' => 'Padded',
+                )),
             ),
         );
 
