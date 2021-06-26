@@ -84,7 +84,9 @@ function ciniki_gallery_main() {
                 },
             'name':{'label':'Title', 'type':'text'},
             'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.albumWebFlags},
-            'sequence':{'label':'Sequence', 'active':'no', 'type':'text', 'size':'small'},
+            'sequence':{'label':'Sequence', 'type':'text', 'size':'small',
+                'active':function() { return M.modFlagSet('ciniki.gallery', 0x01); },
+                },
         }},
         'dates':{'label':'Album Dates', 'type':'simpleform', 'fields':{
             'start_date':{'label':'Start', 'active':'no', 'type':'date'},
@@ -351,7 +353,7 @@ function ciniki_gallery_main() {
 
         this.edit.size = M.modFlagOn('ciniki.gallery', 0x10) ? 'xlarge' : 'medium';
     
-        this.album.sections.info.fields.sequence.active = 'no';
+//        this.album.sections.info.fields.sequence.active = 'no';
         this.album.sections.dates.active = 'no';
         this.album.sections.dates.fields.start_date.active = 'no';
         this.album.sections.dates.fields.end_date.active = 'no';
