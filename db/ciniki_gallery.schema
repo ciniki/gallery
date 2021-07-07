@@ -18,6 +18,13 @@
 # webflags:             Specify if the image should be displayed on the website.
 #
 #                       0x01 - Private (do not display on website)
+#                       0x02 - 
+#                       0x04 - 
+#                       0x08 - 
+#                       0x10 - Album highlight
+#                       0x20 - 
+#                       0x40 - 
+#                       0x80 - 
 #
 # image_id:             The ID of the image in the ciniki.images module.
 #
