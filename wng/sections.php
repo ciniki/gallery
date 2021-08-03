@@ -20,7 +20,7 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
     // Check to make sure the module is enabled
     //
     if( !isset($ciniki['tenant']['modules']['ciniki.gallery']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.21', 'msg'=>"I'm sorry, the section you requested does not exist."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.36', 'msg'=>"I'm sorry, the section you requested does not exist."));
     }
 
     $sections = array();
@@ -39,7 +39,7 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
         array('container'=>'albums', 'fname'=>'name', 'fields'=>array('id', 'name')),
         ));
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.23', 'msg'=>'Unable to load categories', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.37', 'msg'=>'Unable to load categories', 'err'=>$rc['err']));
     }
     $albums = isset($rc['albums']) ? $rc['albums'] : array();
 

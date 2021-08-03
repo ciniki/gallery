@@ -21,21 +21,21 @@ function ciniki_gallery_wng_albumProcess(&$ciniki, $tnid, &$request, $section) {
 // // Check to make sure the module is enabled
     //
     if( !isset($ciniki['tenant']['modules']['ciniki.gallery']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.wng.30', 'msg'=>"Content not available."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.30', 'msg'=>"Content not available."));
     }
 
     //
     // Check to make sure the report is specified
     //
     if( !isset($section['ref']) || !isset($section['settings']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.wng.31', 'msg'=>"No category specified."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.31', 'msg'=>"No category specified."));
     }
 
     //
     // Make sure albums specified
     //
     if( !isset($section['settings']['album-id']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.wng.33', 'msg'=>"No album specified."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.gallery.33', 'msg'=>"No album specified."));
     }
 
     
@@ -56,7 +56,7 @@ function ciniki_gallery_wng_albumProcess(&$ciniki, $tnid, &$request, $section) {
         return $rc;
     }
     if( !isset($rc['album']) ) {
-        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.18', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.gallery.35', 'msg'=>'I\'m sorry, we are unable to find an album by that name.'));
     }
     $album = isset($rc['album']) ? $rc['album'] : array();
 
