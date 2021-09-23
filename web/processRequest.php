@@ -24,6 +24,7 @@ function ciniki_gallery_web_processRequest(&$ciniki, $settings, $tnid, $args) {
     $page = array(
         'title'=>$args['page_title'],
         'breadcrumbs'=>$args['breadcrumbs'],
+        'article-class'=>'ciniki-gallery',
         'blocks'=>array(),
         );
 
