@@ -57,6 +57,7 @@ function ciniki_gallery_albumGet($ciniki) {
     // Get the main information
     //
     $strsql = "SELECT ciniki_gallery_albums.id, "
+        . "ciniki_gallery_albums.uuid, "
         . "ciniki_gallery_albums.category, "
         . "ciniki_gallery_albums.name, "
         . "ciniki_gallery_albums.permalink, "
@@ -72,7 +73,7 @@ function ciniki_gallery_albumGet($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.gallery', array(
         array('container'=>'albums', 'fname'=>'id', 'name'=>'album',
-            'fields'=>array('id', 'category', 'name', 'permalink', 'webflags', 'sequence', 'start_date', 'end_date', 'description'),
+            'fields'=>array('id', 'uuid', 'category', 'name', 'permalink', 'webflags', 'sequence', 'start_date', 'end_date', 'description'),
             'utctotz'=>array('start_date'=>array('timezone'=>$intl_timezone, 'format'=>$date_format),
                 'end_date'=>array('timezone'=>$intl_timezone, 'format'=>$date_format),
             )),
@@ -84,6 +85,11 @@ function ciniki_gallery_albumGet($ciniki) {
         return array('stat'=>'ok', 'err'=>array('code'=>'ciniki.gallery.7', 'msg'=>'Unable to find image'));
     }
     $album = $rc['albums'][0]['album'];
+
+    if( ciniki_core_checkModuleFlags($ciniki, 'ciniki.gallery', 0x0100) ) {
+        $url = 'http://' . $ciniki['config']['ciniki.web']['master.domain'] . '/photoframe/' . $album['uuid'];
+        $album['photoframe_url'] = "<a target='_blank' href='{$url}'>{$url}</a>";
+    }
     
     return array('stat'=>'ok', 'album'=>$album);
 }

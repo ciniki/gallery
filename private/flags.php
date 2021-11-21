@@ -22,6 +22,11 @@ function ciniki_gallery_flags($ciniki, $modules) {
 //        array('flag'=>array('bit'=>'6', 'name'=>'')),
 //        array('flag'=>array('bit'=>'7', 'name'=>'')),
 //        array('flag'=>array('bit'=>'8', 'name'=>'')),
+        // 0x0100
+        array('flag'=>array('bit'=>'9', 'name'=>'Photoframe')),
+//        array('flag'=>array('bit'=>'10', 'name'=>'')),
+//        array('flag'=>array('bit'=>'11', 'name'=>'')),
+//        array('flag'=>array('bit'=>'12', 'name'=>'')),
         );
 
     return array('stat'=>'ok', 'flags'=>$flags);

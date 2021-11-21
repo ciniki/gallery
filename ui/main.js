@@ -24,7 +24,7 @@ function ciniki_gallery_main() {
         'albums':{'label':'Albums', 'type':'simplegrid', 'num_cols':1,
             'headerValues':null,
             'addTxt':'New Album',
-            'addFn':'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.albums.open();\',0);',
+            'addFn':'M.ciniki_gallery_main.album.open(\'M.ciniki_gallery_main.albums.open();\',0);',
             },
     };
 //    this.albums.sectionData = function(s) {
@@ -67,7 +67,7 @@ function ciniki_gallery_main() {
             p.show(cb);
         });
     };
-    this.albums.addButton('add', 'Add', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.albums.open();\',0);');
+    this.albums.addButton('add', 'Add', 'M.ciniki_gallery_main.album.open(\'M.ciniki_gallery_main.albums.open();\',0);');
     this.albums.addClose('Back');
 
     //
@@ -84,8 +84,14 @@ function ciniki_gallery_main() {
                 },
             'name':{'label':'Title', 'type':'text'},
             'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.albumWebFlags},
+            'flags5':{'label':'Photoframe', 'type':'flagtoggle', 'field':'webflags', 'bit':0x10, 
+                'visible':function() { return M.modFlagSet('ciniki.gallery', 0x0100); },
+                },
             'sequence':{'label':'Sequence', 'type':'text', 'size':'small',
                 'active':function() { return M.modFlagSet('ciniki.gallery', 0x01); },
+                },
+            'photoframe_url':{'label':'Photoframe', 'type':'noedit', 'editable':'no',
+                'visible':function() { return M.modFlagSet('ciniki.gallery', 0x0100); },
                 },
         }},
         'dates':{'label':'Album Dates', 'type':'simpleform', 'fields':{
@@ -96,8 +102,8 @@ function ciniki_gallery_main() {
             'description':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
         }},
         '_buttons':{'label':'', 'buttons':{
-            'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.saveAlbum();'},
-            'delete':{'label':'Remove Album', 'visible':function() {return (M.ciniki_gallery_main.album.album_id>0?'yes':'no');}, 'fn':'M.ciniki_gallery_main.deleteAlbum();'},
+            'save':{'label':'Save', 'fn':'M.ciniki_gallery_main.album.save();'},
+            'delete':{'label':'Remove Album', 'visible':function() {return (M.ciniki_gallery_main.album.album_id>0?'yes':'no');}, 'fn':'M.ciniki_gallery_main.album.remove();'},
         }},
     };
     this.album.fieldValue = function(s, i, d) { 
@@ -126,7 +132,75 @@ function ciniki_gallery_main() {
         M.gE(this.panelUID + '_' + fid).value = unescape(result);
         this.removeLiveSearch(s, fid);
     };
-    this.album.addButton('save', 'Save', 'M.ciniki_gallery_main.saveAlbum();');
+    this.album.open = function(cb, aid) {
+        if( aid != null ) { this.album_id = aid; }
+        if( this.album_id > 0 ) {
+            M.api.getJSONCb('ciniki.gallery.albumGet', {'tnid':M.curTenantID, 'album_id':this.album_id}, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                var p = M.ciniki_gallery_main.album;
+                p.data = rsp.album;
+                console.log(rsp);
+                p.refresh();
+                p.show(cb);
+            });
+        } else {
+            this.reset();
+            this.data = {};
+            this.refresh();
+            this.show(cb);
+        }
+    };
+    this.album.save = function() {
+        if( this.album_id > 0 ) {
+            var c = this.serializeFormData('no');
+            if( c != '' ) {
+                // Set the panel title if name changed on the album list
+                var new_name = this.formFieldValue(this.formField('name'), 'name');
+                if( this.data.name != new_name ) {
+                    M.ciniki_gallery_main.list.title = new_name;
+                }
+                var rsp = M.api.postJSONFormData('ciniki.gallery.albumUpdate', 
+                    {'tnid':M.curTenantID, 
+                    'album_id':this.album_id}, c,
+                        function(rsp) {
+                            if( rsp.stat != 'ok' ) {
+                                M.api.err(rsp);
+                                return false;
+                            } 
+                            M.ciniki_gallery_main.album.close();
+                        });
+            } else {
+                M.ciniki_gallery_main.album.close();
+            }
+        } else {
+            var c = this.serializeForm('yes');
+            var rsp = M.api.postJSONFormData('ciniki.gallery.albumAdd', {'tnid':M.curTenantID}, c,
+                function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    } 
+                    M.ciniki_gallery_main.album.close();
+                });
+        }
+    };
+    this.album.remove = function() {
+        M.confirm('Are you sure you want to delete this album?',null,function() {
+            var rsp = M.api.getJSONCb('ciniki.gallery.albumDelete', 
+                {'tnid':M.curTenantID, 'album_id':M.ciniki_gallery_main.album.album_id}, function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    }
+                    M.ciniki_gallery_main.album.destroy();
+                    M.ciniki_gallery_main.list.close();
+                });
+        });
+    };
+    this.album.addButton('save', 'Save', 'M.ciniki_gallery_main.album.save();');
     this.album.addClose('Cancel');
 
     //
@@ -181,7 +255,7 @@ function ciniki_gallery_main() {
     };
     this.list.addButton('add', 'Add', 'M.ciniki_gallery_main.edit.open(\'M.ciniki_gallery_main.list.open();\',0,M.ciniki_gallery_main.list.album_id);');
 //      this.list.addButton('tools', 'Tools', 'M.ciniki_gallery_main.tools.show(\'M.ciniki_gallery_main.list.open();\');');
-    this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.editAlbum(\'M.ciniki_gallery_main.list.open();\',M.ciniki_gallery_main.list.album_id);');
+    this.list.addButton('edit', 'Edit', 'M.ciniki_gallery_main.album.open(\'M.ciniki_gallery_main.list.open();\',M.ciniki_gallery_main.list.album_id);');
     this.list.addClose('Back');
 
     //
@@ -378,81 +452,6 @@ function ciniki_gallery_main() {
         }
         return true;
     };
-
-
-
-    this.editAlbum = function(cb, aid) {
-        if( aid != null ) { this.album.album_id = aid; }
-        if( this.album.album_id > 0 ) {
-            M.api.getJSONCb('ciniki.gallery.albumGet', 
-                {'tnid':M.curTenantID, 'album_id':this.album.album_id}, function(rsp) {
-                    if( rsp.stat != 'ok' ) {
-                        M.api.err(rsp);
-                        return false;
-                    }
-                    var p = M.ciniki_gallery_main.album;
-                    p.data = rsp.album;
-                    p.refresh();
-                    p.show(cb);
-                });
-        } else {
-            this.album.reset();
-            this.album.data = {};
-            this.album.refresh();
-            this.album.show(cb);
-        }
-    };
-
-    this.saveAlbum = function() {
-        if( this.album.album_id > 0 ) {
-            var c = this.album.serializeFormData('no');
-            if( c != '' ) {
-                // Set the panel title if name changed on the album list
-                var new_name = this.album.formFieldValue(this.album.formField('name'), 'name');
-                if( this.album.data.name != new_name ) {
-                    M.ciniki_gallery_main.list.title = new_name;
-                }
-                var rsp = M.api.postJSONFormData('ciniki.gallery.albumUpdate', 
-                    {'tnid':M.curTenantID, 
-                    'album_id':this.album.album_id}, c,
-                        function(rsp) {
-                            if( rsp.stat != 'ok' ) {
-                                M.api.err(rsp);
-                                return false;
-                            } 
-                            M.ciniki_gallery_main.album.close();
-                        });
-            } else {
-                M.ciniki_gallery_main.album.close();
-            }
-        } else {
-            var c = this.album.serializeForm('yes');
-            var rsp = M.api.postJSONFormData('ciniki.gallery.albumAdd', {'tnid':M.curTenantID}, c,
-                function(rsp) {
-                    if( rsp.stat != 'ok' ) {
-                        M.api.err(rsp);
-                        return false;
-                    } 
-                    M.ciniki_gallery_main.album.close();
-                });
-        }
-    };
-
-    this.deleteAlbum = function() {
-        M.confirm('Are you sure you want to delete this album?',null,function() {
-            var rsp = M.api.getJSONCb('ciniki.gallery.albumDelete', 
-                {'tnid':M.curTenantID, 'album_id':M.ciniki_gallery_main.album.album_id}, function(rsp) {
-                    if( rsp.stat != 'ok' ) {
-                        M.api.err(rsp);
-                        return false;
-                    }
-                    M.ciniki_gallery_main.album.destroy();
-                    M.ciniki_gallery_main.list.close();
-                });
-        });
-    };
-
-
 
 
     this.deleteImage = function() {
