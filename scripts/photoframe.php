@@ -130,6 +130,7 @@ $strsql = "SELECT id, uuid, image_id, UNIX_TIMESTAMP(last_updated) AS last_updat
     . "FROM ciniki_gallery "
     . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $album['tnid']) . "' "
     . "AND album_id = '" . ciniki_core_dbQuote($ciniki, $album['id']) . "' "
+    . "ORDER BY RAND() "
     . "";
 ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
 $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.gallery', array(
@@ -151,8 +152,8 @@ $cache_url = '/photoframe-cache/' . $album['uuid'][0] . '/' . $album['uuid'];
 //
 $image_html .= "<div class='images'>";
 $count = 1;
-$class = '';
-foreach($images as $image) {
+$class = 'hidden';
+foreach($images as $idx => $image) {
     
     //
     // Check if cached file exists
@@ -181,11 +182,13 @@ foreach($images as $image) {
             fclose($h);
         }
     } 
+    if( count($images) == ($idx+1) ) {
+        $class = '';
+    }
     $image_html .= "<div id='{$count}' class='image {$class}' "
         . "style='background:#000 url({$cache_url}/{$image['uuid']}.jpg) center center; background-size:cover;'>"
         . "</div>";
     $count++;
-    $class = 'hidden';
 }
 $image_html .= "</images>";
 $count--;
@@ -209,20 +212,22 @@ $content .= "<style>"
     . "</style>";
 $content .= "<script type='text/javascript'>"
     . "var _timer=null;"
-    . "var cur=1;"
+    . "var cur={$count};"
     . "var num={$count};"
     . "function init() {"
-        . "_timer = setTimeout(next, 2000);"
+        . "_timer = setTimeout(next, 30000);"
     . "}"
     . "function next() {"
         . "var p=cur;"
-        . "cur++;"
-        . "if(cur>num){cur=1;}"
+//        . "cur++;"
+//        . "if(cur>num){cur=1;}"
+        . "cur--;"
+        . "if(cur<1){cur={$count};}"
         . "var e=document.getElementById(cur);"
         . "e.className = 'image';"
         . "var e=document.getElementById(p);"
         . "e.className = 'image hidden';"
-        . "_timer = setTimeout(next, 2000);"
+        . "_timer = setTimeout(next, 10000);"
     . "}"
     . "window.onload=init();"
     . "</script>";
