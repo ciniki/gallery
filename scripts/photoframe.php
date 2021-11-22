@@ -150,7 +150,7 @@ $cache_url = '/photoframe-cache/' . $album['uuid'][0] . '/' . $album['uuid'];
 //
 // Generate images and html
 //
-$image_html .= "<div class='images'>";
+$image_html = "<div class='images'>";
 $count = 1;
 $class = 'hidden';
 foreach($images as $idx => $image) {
