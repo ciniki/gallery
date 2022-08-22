@@ -44,10 +44,10 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
     $albums = isset($rc['albums']) ? $rc['albums'] : array();
 
     //
-    // Image, Menu with no drop downs/submenus
+    // Album image carousel/slider
     //
     $sections['ciniki.gallery.album'] = array(
-        'name'=>'Single Album',
+        'name'=>'Single Album Carousel',
         'module' => 'Gallery',
         'settings'=>array(
             'album-id' => array('label'=>'Album', 'type'=>'select', 'options'=>$albums, 
@@ -69,6 +69,20 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
                 'no' => 'Cropped',
                 'yes' => 'Padded',
                 )),
+            ),
+        );
+
+    $sections['ciniki.gallery.flexalbum'] = array(
+        'name'=>'Single Album',
+        'module' => 'Gallery',
+        'settings'=>array(
+            'album-id' => array('label'=>'Album', 'type'=>'select', 'options'=>$albums, 
+                'complex_options'=>array('value'=>'id', 'name'=>'name'),
+                ),
+//            'title-show' => array('label'=>'Album Title & Description', 'type'=>'toggle', 'default'=>'no', 'toggles'=>array(
+//                'no' => 'Hidden',
+//                'yes' => 'Visible',
+//                )),
             ),
         );
 
