@@ -98,7 +98,7 @@ function ciniki_gallery_wng_flexAlbumProcess(&$ciniki, $tnid, &$request, $sectio
             }
         }
         
-        if( isset($album['name']) && $album['name'] != '' 
+/*        if( isset($album['name']) && $album['name'] != '' 
             && isset($s['title-show']) && $s['title-show'] == 'yes'
             ) {
             $blocks[] = array(
@@ -106,15 +106,18 @@ function ciniki_gallery_wng_flexAlbumProcess(&$ciniki, $tnid, &$request, $sectio
                 'title' => $album['name'],
                 'content' => $album['description'],
                 );
-        }
+        } */
 
         if( isset($selected_image) ) {
+            $blocks[] = array(
+                'type' => 'title',
+                'title' => $request['page']['title'] . ' - ' . $selected_image['title'],
+                );
             $blocks[] = array(
                 'type' => 'image',
                 'image-id' => $selected_image['image-id'],
                 'image-permalink' => $selected_image['permalink'],
                 'image-list' => $images,
-                'title' => $selected_image['title'],
                 'content' => $selected_image['content'],
                 'base-url' => $request['page']['path'],
                 );
