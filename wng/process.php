@@ -37,6 +37,9 @@ function ciniki_gallery_wng_process(&$ciniki, $tnid, &$request, $section) {
     } elseif( isset($section['ref']) && $section['ref'] == 'ciniki.gallery.flexalbum' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'wng', 'flexAlbumProcess');
         return ciniki_gallery_wng_flexAlbumProcess($ciniki, $tnid, $request, $section);
+    } elseif( isset($section['ref']) && $section['ref'] == 'ciniki.gallery.flexalbums' ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'wng', 'flexAlbumsProcess');
+        return ciniki_gallery_wng_flexAlbumsProcess($ciniki, $tnid, $request, $section);
     } elseif( isset($section['ref']) && $section['ref'] == 'ciniki.gallery.albums' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'gallery', 'wng', 'albumProcess');
         return ciniki_gallery_wng_albumProcess($ciniki, $tnid, $request, $section);

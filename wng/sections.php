@@ -86,6 +86,21 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
             ),
         );
 
+    $sections['ciniki.gallery.flexalbums'] = array(
+        'name'=>'Multiple Albums',
+        'module' => 'Gallery',
+        'settings'=>array(),
+        );
+    array_unshift($albums, array('id' => 0, 'name' => 'None'));
+    for($i = 1; $i <= 10; $i++) {
+        $sections['ciniki.gallery.flexalbums']['settings']["album-{$i}-id"] = array(
+            'label' => 'Album', 
+            'type' => 'select', 
+            'options' => $albums, 
+            'complex_options' => array('value'=>'id', 'name'=>'name'),
+            );
+    }
+
     return array('stat'=>'ok', 'sections'=>$sections);
 }
 ?>
