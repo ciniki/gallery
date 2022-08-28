@@ -111,7 +111,7 @@ function ciniki_gallery_wng_flexAlbumProcess(&$ciniki, $tnid, &$request, $sectio
         if( isset($selected_image) ) {
             $blocks[] = array(
                 'type' => 'title',
-                'title' => $request['page']['title'] . ' - ' . $selected_image['title'],
+                'title' => $request['page']['title'] . ($selected_image['title'] != '' ? ' - ' . $selected_image['title'] : ''),
                 );
             $blocks[] = array(
                 'type' => 'image',
