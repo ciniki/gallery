@@ -44,6 +44,7 @@ function ciniki_gallery_wng_flexAlbumsProcess(&$ciniki, $tnid, &$request, $secti
             $album_ids[] = $s["album-{$i}-id"];
         }
     }
+    $album_ids = array_unique($album_ids);
 
     if( count($album_ids) == 0 ) {
         return array('stat'=>'ok', 'blocks'=>$blocks);
