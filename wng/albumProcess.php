@@ -104,7 +104,7 @@ function ciniki_gallery_wng_albumProcess(&$ciniki, $tnid, &$request, $section) {
             'titles' => 'yes',
             'items' => $images,
             'speed' => isset($s['speed']) ? $s['speed'] : 0,
-            'padded' => isset($s['padded']) && $s['padded'] == 'yes' ? 'yes' : 'no',
+            'image-format' => isset($s['image-format']) && $s['image-format'] != '' ? $s['image-format'] : 'padded',
             );
     }
 

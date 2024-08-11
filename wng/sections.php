@@ -65,9 +65,9 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
                 'fast' => 'Fast',
                 'xfast' => 'X-Fast',
                 )),
-            'padded' => array('label'=>'Image Format', 'type'=>'toggle', 'default'=>'no', 'toggles'=>array(
-                'no' => 'Cropped',
-                'yes' => 'Padded',
+            'image-format' => array('label'=>'Image Format', 'type'=>'toggle', 'default'=>'no', 'toggles'=>array(
+                'cropped' => 'Cropped',
+                'padded' => 'Padded',
                 )),
             ),
         );
