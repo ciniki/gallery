@@ -87,9 +87,9 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
         );
 
     $sections['ciniki.gallery.flexalbums'] = array(
-        'name'=>'Multiple Albums',
+        'name' => 'Multiple Albums',
         'module' => 'Gallery',
-        'settings'=>array(),
+        'settings' => array(),
         );
     array_unshift($albums, array('id' => 0, 'name' => 'None'));
     for($i = 1; $i <= 10; $i++) {
@@ -100,6 +100,30 @@ function ciniki_gallery_wng_sections(&$ciniki, $tnid, $args) {
             'complex_options' => array('value'=>'id', 'name'=>'name'),
             );
     }
+
+    $sort_options = [
+        'name-asc' => 'Name A-Z',
+        'name-desc' => 'Name Z-A',
+        ];
+    if( ciniki_core_checkModuleFlags($ciniki, 'ciniki.gallery', 0x01) ) {
+        $sort_options['sequence-asc'] = 'Sequence, 1-999';
+        $sort_options['sequence-desc'] = 'Sequence, 999-1';
+    }
+    if( ciniki_core_checkModuleFlags($ciniki, 'ciniki.gallery', 0x02) ) {
+        $sort_options['date-desc'] = 'Date, newest first';
+        $sort_options['date-asc'] = 'Date, oldest first';
+    }
+    
+    $sections['ciniki.gallery.albums'] = array(
+        'name' => 'Albums',
+        'module' => 'Gallery',
+        'settings' => array(
+            'title' => array('label'=>'Title', 'type'=>'text'),
+            'content' => array('label'=>'Intro', 'type'=>'textarea'),
+            'sort-by' => array('label'=>'List Albums by', 'type'=>'select', 
+                'options' => $sort_options,
+                ),
+        ));
 
     return array('stat'=>'ok', 'sections'=>$sections);
 }
