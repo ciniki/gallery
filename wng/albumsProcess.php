@@ -49,7 +49,8 @@ function ciniki_gallery_wng_albumsProcess(&$ciniki, $tnid, &$request, $section) 
         . "FROM ciniki_gallery_albums AS albums "
         . "WHERE albums.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (albums.webflags&0x01) = 0 "
-        . "AND albums.name <> '' ";
+        . "AND albums.name <> '' "
+        . "HAVING image_id > 0 ";
     if( isset($s['sort-by']) ) {
         if( $s['sort-by'] == 'name-asc' ) {
             $strsql .= "ORDER BY name ";
