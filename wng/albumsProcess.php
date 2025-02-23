@@ -60,9 +60,9 @@ function ciniki_gallery_wng_albumsProcess(&$ciniki, $tnid, &$request, $section) 
             $strsql .= "ORDER BY sequence ASC, name ";
         } elseif( $s['sort-by'] == 'sequence-desc' ) {
             $strsql .= "ORDER BY sequence DESC, name ";
-        } elseif( $s['sort-by'] == 'startdate-asc' ) {
+        } elseif( $s['sort-by'] == 'date-asc' ) {
             $strsql .= "ORDER BY start_date, name ";
-        } elseif( $s['sort-by'] == 'startdate-desc' ) {
+        } elseif( $s['sort-by'] == 'date-desc' ) {
             $strsql .= "ORDER BY start_date DESC, name ";
         }
     }
